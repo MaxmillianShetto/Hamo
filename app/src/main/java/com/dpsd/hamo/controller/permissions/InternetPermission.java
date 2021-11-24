@@ -25,10 +25,8 @@ public class InternetPermission implements PermissionManager
         {
             ActivityCompat.requestPermissions(activity, new String[]{ Manifest.permission.INTERNET}, PERMISSIONS_REQUEST_CODE);
 
-            boolean permission = (PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(
+            return (PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(
                     appContext, Manifest.permission.INTERNET));
-
-            return permission;
         }
     }
 }

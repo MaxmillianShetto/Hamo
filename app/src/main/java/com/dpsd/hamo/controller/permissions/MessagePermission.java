@@ -24,10 +24,8 @@ public class MessagePermission implements PermissionManager
         {
             ActivityCompat.requestPermissions(activity, new String[]{ Manifest.permission.SEND_SMS}, PERMISSIONS_REQUEST_CODE);
 
-            boolean permission = (PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(
+            return (PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(
                     appContext, Manifest.permission.SEND_SMS));
-
-            return permission;
         }
     }
 }
