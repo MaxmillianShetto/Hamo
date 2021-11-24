@@ -1,42 +1,50 @@
 package com.dpsd.hamo.view.ui.report;
 
-import androidx.lifecycle.ViewModelProvider;
-
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
-import com.dpsd.hamo.R;
+import com.dpsd.hamo.databinding.FragmentReportBinding;
 
 public class ReportFragment extends Fragment
 {
 
-    private ReportViewModel mViewModel;
+    private ReportViewModel reportViewModel;
+    private FragmentReportBinding binding;
 
-    public static ReportFragment newInstance()
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             ViewGroup container, Bundle savedInstanceState)
     {
-        return new ReportFragment();
+        reportViewModel =
+                new ViewModelProvider(this).get(ReportViewModel.class);
+
+        binding = FragmentReportBinding.inflate(inflater, container, false);
+        View root = binding.getRoot();
+
+        final TextView textView = binding.textDashboard;
+        reportViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>()
+        {
+            @Override
+            public void onChanged(@Nullable String s)
+            {
+                textView.setText(s);
+            }
+        });
+        return root;
     }
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState)
+    public void onDestroyView()
     {
-        return inflater.inflate(R.layout.report_fragment, container, false);
+        super.onDestroyView();
+        binding = null;
     }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState)
-    {
-        super.onActivityCreated(savedInstanceState);
-        mViewModel = new ViewModelProvider(this).get(ReportViewModel.class);
-        // TODO: Use the ViewModel
-    }
-
 }

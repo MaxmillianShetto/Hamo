@@ -3,11 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/share_folder/JavaWorkSpace/Hamo/app/src/main/res/drawable/ic_home_black_24dp.xml" value="0.21614583333333334" />
-        <entry key="..\:/share_folder/JavaWorkSpace/Hamo/app/src/main/res/drawable/ic_profile_black_24dp.xml" value="0.21614583333333334" />
-        <entry key="..\:/share_folder/JavaWorkSpace/Hamo/app/src/main/res/drawable/ic_report_black_24dp.xml" value="0.21614583333333334" />
-        <entry key="..\:/share_folder/JavaWorkSpace/Hamo/app/src/main/res/layout/activity_main.xml" value="0.2" />
-        <entry key="..\:/share_folder/JavaWorkSpace/Hamo/app/src/main/res/menu/bottom_nav_menu.xml" value="0.2" />
+        <entry key="..\:/share_folder/JavaWorkSpace/Hamo3/app/src/main/res/layout/activity_main.xml" value="0.1" />
       </map>
     </option>
   </component>
