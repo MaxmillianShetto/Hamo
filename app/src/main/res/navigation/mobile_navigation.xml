@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation">
+
+    <fragment
+        android:id="@+id/navigation_home"
+        android:name="com.dpsd.hamo.view.ui.home.HomeFragment"
+        android:label="@string/title_home"
+        tools:layout="@layout/home_fragment" />
+
+    <fragment
+        android:id="@+id/navigation_report"
+        android:name="com.dpsd.hamo.view.ui.report.ReportFragment"
+        android:label="@string/title_report"
+        tools:layout="@layout/report_fragment" />
+
+    <fragment
+        android:id="@+id/navigation_profile"
+        android:name="com.dpsd.hamo.view.ui.profile.ProfileFragment"
+        android:label="@string/title_profile"
+        tools:layout="@layout/profile_fragment" />
+
+</navigation>
