@@ -1,8 +1,10 @@
-package com.dpsd.hamo;
+package com.dpsd.hamo.view;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+
+import com.dpsd.hamo.R;
 
 public class MainActivity extends AppCompatActivity
 {
