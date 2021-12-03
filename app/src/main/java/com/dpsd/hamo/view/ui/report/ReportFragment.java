@@ -17,20 +17,21 @@ import com.dpsd.hamo.databinding.FragmentReportBinding;
 public class ReportFragment extends Fragment
 {
 
-    private ReportViewModel reportViewModel;
+    private GiverReportViewModel giverReportViewModel;
+    private CommunityRepReportViewModel communityRepReportViewModel;
     private FragmentReportBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState)
     {
-        reportViewModel =
-                new ViewModelProvider(this).get(ReportViewModel.class);
+        giverReportViewModel =
+                new ViewModelProvider(this).get(GiverReportViewModel.class);
 
         binding = FragmentReportBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
         final TextView textView = binding.textDashboard;
-        reportViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>()
+        giverReportViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>()
         {
             @Override
             public void onChanged(@Nullable String s)
@@ -39,6 +40,23 @@ public class ReportFragment extends Fragment
             }
         });
         return root;
+
+//        communityRepReportViewModel =
+//                new ViewModelProvider(this).get(CommunityRepReportViewModel.class);
+//
+//        binding = FragmentReportBinding.inflate(inflater, container, false);
+//        View root = binding.getRoot();
+//
+//        final TextView textView = binding.textDashboard;
+//        communityRepReportViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>()
+//        {
+//            @Override
+//            public void onChanged(@Nullable String s)
+//            {
+//                textView.setText(s);
+//            }
+//        });
+//        return root;
     }
 
     @Override

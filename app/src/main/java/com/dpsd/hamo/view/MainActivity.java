@@ -1,5 +1,6 @@
 package com.dpsd.hamo.view;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.dpsd.hamo.R;
@@ -15,6 +16,7 @@ import com.dpsd.hamo.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity
 {
+    Boolean userLoggedIn = false;
 
     private ActivityMainBinding binding;
 
@@ -25,6 +27,11 @@ public class MainActivity extends AppCompatActivity
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        if (!userLoggedIn)
+        {
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
+        }
 
         BottomNavigationView navView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each

@@ -4,15 +4,15 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class ReportViewModel extends ViewModel
+public class CommunityRepReportViewModel extends ViewModel
 {
 
     private MutableLiveData<String> mText;
 
-    public ReportViewModel()
+    public CommunityRepReportViewModel()
     {
         mText = new MutableLiveData<>();
-        mText.setValue("This is report fragment");
+        mText.setValue("This is community rep report fragment");
     }
 
     public LiveData<String> getText()

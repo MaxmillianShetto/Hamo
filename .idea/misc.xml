@@ -3,6 +3,13 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/share_folder/JavaWorkSpace/Hamo/app/src/main/res/layout/activity_login.xml" value="0.17844202898550723" />
+        <entry key="..\:/share_folder/JavaWorkSpace/Hamo/app/src/main/res/layout/fragment_forgot_password.xml" value="0.2" />
+        <entry key="..\:/share_folder/JavaWorkSpace/Hamo/app/src/main/res/layout/fragment_home.xml" value="0.2" />
+        <entry key="..\:/share_folder/JavaWorkSpace/Hamo/app/src/main/res/layout/fragment_login.xml" value="0.33" />
+        <entry key="..\:/share_folder/JavaWorkSpace/Hamo/app/src/main/res/layout/fragment_profile.xml" value="0.2" />
+        <entry key="..\:/share_folder/JavaWorkSpace/Hamo/app/src/main/res/layout/fragment_reset_password.xml" value="0.2" />
+        <entry key="..\:/share_folder/JavaWorkSpace/Hamo/app/src/main/res/layout/fragment_sign_up.xml" value="0.2" />
         <entry key="..\:/share_folder/JavaWorkSpace/Hamo3/app/src/main/res/layout/activity_main.xml" value="0.1" />
       </map>
     </option>
