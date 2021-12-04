@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "620420810312",
+    "project_id": "hamo-98247",
+    "storage_bucket": "hamo-98247.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:620420810312:android:3930a976686db563d5ba7d",
+        "android_client_info": {
+          "package_name": "com.dpsd.hamo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "620420810312-ncvdkne6n65d4a3jfrrslrr0p9mgdv5m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAm5KWmaM1mIyDJm93v4DZNFSaF6KmPPTU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "620420810312-ncvdkne6n65d4a3jfrrslrr0p9mgdv5m.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
