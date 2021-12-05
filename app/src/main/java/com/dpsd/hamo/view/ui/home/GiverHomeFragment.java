@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -16,7 +15,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
-import com.dpsd.hamo.DonationDetailsActivity;
 import com.dpsd.hamo.R;
 import com.dpsd.hamo.controllers.ShowCoordinates;
 import com.dpsd.hamo.databinding.FragmentGiverHomeBinding;
@@ -32,25 +30,11 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link GiverHomeFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class GiverHomeFragment extends Fragment
 {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
     private @NonNull
     FragmentGiverHomeBinding binding;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     SupportMapFragment supportMapFragment = new SupportMapFragment();
     FusedLocationProviderClient providerClient;
@@ -72,21 +56,10 @@ public class GiverHomeFragment extends Fragment
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment CommunityRepHomeFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static GiverHomeFragment newInstance(String param1, String param2)
     {
         GiverHomeFragment fragment = new GiverHomeFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -95,11 +68,6 @@ public class GiverHomeFragment extends Fragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null)
-        {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -132,7 +100,7 @@ public class GiverHomeFragment extends Fragment
 
                         String markerTitle = marker.getTitle();
 
-                        Intent markerIntent = new Intent(getActivity(), DonationDetailsActivity.class);
+                        Intent markerIntent = new Intent(getActivity(), DonationRequestDetailsActivity.class);
                         markerIntent.putExtra("title", markerTitle);
                         startActivity(markerIntent);
                         Toast.makeText(getContext(), "Clicked marker", Toast.LENGTH_SHORT).show();

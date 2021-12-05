@@ -96,7 +96,6 @@ public class LoginFragment extends Fragment implements Login, AdapterView.OnItem
 
         signUp.setOnClickListener(new View.OnClickListener()
         {
-
             public void onClick(View v)
             {
                 loadSignUp(v);

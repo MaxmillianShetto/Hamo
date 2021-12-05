@@ -30,8 +30,7 @@ public class AdminActivity extends AppCompatActivity
         String role = intent.getStringExtra("role");
 
         BottomNavigationView navView = findViewById(R.id.nav_view_admin);
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
+
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.navigation_home_admin, R.id.navigation_report_admin, R.id.navigation_profile_admin)
                 .build();

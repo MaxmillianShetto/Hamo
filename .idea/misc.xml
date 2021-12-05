@@ -5,12 +5,16 @@
       <map>
         <entry key="..\:/share_folder/JavaWorkSpace/Hamo/app/src/main/res/layout/activity_admin.xml" value="0.1" />
         <entry key="..\:/share_folder/JavaWorkSpace/Hamo/app/src/main/res/layout/activity_community_rep.xml" value="0.1" />
+        <entry key="..\:/share_folder/JavaWorkSpace/Hamo/app/src/main/res/layout/activity_create_request.xml" value="0.22" />
+        <entry key="..\:/share_folder/JavaWorkSpace/Hamo/app/src/main/res/layout/activity_donate.xml" value="0.15" />
         <entry key="..\:/share_folder/JavaWorkSpace/Hamo/app/src/main/res/layout/activity_donation_details.xml" value="0.2" />
+        <entry key="..\:/share_folder/JavaWorkSpace/Hamo/app/src/main/res/layout/activity_donation_request_details.xml" value="0.1" />
         <entry key="..\:/share_folder/JavaWorkSpace/Hamo/app/src/main/res/layout/activity_giver.xml" value="0.1" />
         <entry key="..\:/share_folder/JavaWorkSpace/Hamo/app/src/main/res/layout/activity_login.xml" value="0.17844202898550723" />
         <entry key="..\:/share_folder/JavaWorkSpace/Hamo/app/src/main/res/layout/fragment_admin_home.xml" value="0.1" />
         <entry key="..\:/share_folder/JavaWorkSpace/Hamo/app/src/main/res/layout/fragment_community_rep_home.xml" value="0.1" />
         <entry key="..\:/share_folder/JavaWorkSpace/Hamo/app/src/main/res/layout/fragment_community_rep_profile.xml" value="0.1" />
+        <entry key="..\:/share_folder/JavaWorkSpace/Hamo/app/src/main/res/layout/fragment_donation_screen.xml" value="0.18" />
         <entry key="..\:/share_folder/JavaWorkSpace/Hamo/app/src/main/res/layout/fragment_forgot_password.xml" value="0.2" />
         <entry key="..\:/share_folder/JavaWorkSpace/Hamo/app/src/main/res/layout/fragment_giver_home.xml" value="0.1" />
         <entry key="..\:/share_folder/JavaWorkSpace/Hamo/app/src/main/res/layout/fragment_giver_profile.xml" value="0.1" />

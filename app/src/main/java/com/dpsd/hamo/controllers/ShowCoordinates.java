@@ -26,14 +26,11 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.UserHandle;
 import android.view.Display;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentActivity;
 
-import com.dpsd.hamo.DonationDetailsActivity;
 import com.dpsd.hamo.controller.permissions.PermissionFactory;
 import com.dpsd.hamo.controller.permissions.PermissionManager;
 import com.dpsd.hamo.controller.permissions.PermissionType;
@@ -41,8 +38,6 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.maps.*;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 

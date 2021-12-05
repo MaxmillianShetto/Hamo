@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.dpsd.hamo" >
+    package="com.dpsd.hamo">
 
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -16,12 +16,18 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Hamo" >
+        android:theme="@style/Theme.Hamo">
         <activity
-            android:name=".DonationDetailsActivity"
+            android:name=".view.ui.home.CreateRequestActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.ui.home.DonateActivity"
             android:exported="false" />
         <activity
             android:name=".view.ui.home.DonationRequestDetailsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".view.ui.home.DonationDetailsActivity"
             android:exported="false" />
         <activity
             android:name=".view.AdminActivity"
@@ -40,7 +46,7 @@
         <activity
             android:name=".view.LoginActivity"
             android:exported="true"
-            android:label="@string/app_name" >
+            android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

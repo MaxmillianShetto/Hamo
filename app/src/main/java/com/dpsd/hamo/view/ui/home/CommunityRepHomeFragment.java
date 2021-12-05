@@ -2,6 +2,7 @@ package com.dpsd.hamo.view.ui.home;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 
@@ -21,11 +22,15 @@ import com.dpsd.hamo.databinding.FragmentCommunityRepHomeBinding;
 import com.dpsd.hamo.databinding.FragmentGiverHomeBinding;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 
 import java.util.ArrayList;
 
@@ -36,18 +41,13 @@ import java.util.ArrayList;
  */
 public class CommunityRepHomeFragment extends Fragment
 {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
     private @NonNull FragmentCommunityRepHomeBinding binding;
 
     SupportMapFragment supportMapFragment = new SupportMapFragment();
     FusedLocationProviderClient providerClient;
     AppCompatActivity activity;
     Context context;
+    ExtendedFloatingActionButton fab;
 
     ArrayList<LatLng> locations;
     ArrayList<String> title;
@@ -58,31 +58,15 @@ public class CommunityRepHomeFragment extends Fragment
     LatLng bee = new LatLng(-31.08, 150.9);
     LatLng dog = new LatLng(-30, 151.34);
 
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
     public CommunityRepHomeFragment()
     {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment CommunityRepHomeFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static CommunityRepHomeFragment newInstance(String param1, String param2)
     {
         CommunityRepHomeFragment fragment = new CommunityRepHomeFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -91,11 +75,6 @@ public class CommunityRepHomeFragment extends Fragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null)
-        {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -105,6 +84,18 @@ public class CommunityRepHomeFragment extends Fragment
         binding = FragmentCommunityRepHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
+        fab = binding.extendedFab;
+
+        fab.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                Intent createRequestIntent = new Intent(getActivity(), CreateRequestActivity.class);
+                startActivity(createRequestIntent);
+            }
+        });
+
         supportMapFragment = (SupportMapFragment) getChildFragmentManager()
                 .findFragmentById(R.id.community_rep_map);
         supportMapFragment.getMapAsync(new OnMapReadyCallback()
@@ -112,7 +103,30 @@ public class CommunityRepHomeFragment extends Fragment
             @Override
             public void onMapReady(@NonNull GoogleMap googleMap)
             {
-                Toast.makeText(getContext(),"Done", Toast.LENGTH_SHORT);
+                for (int i = 0; i < locations.size(); i++)
+                {
+                    MarkerOptions options = new MarkerOptions().position(locations.get(i)).title(String.valueOf(title.get(i)));
+                    googleMap.addMarker(options);
+
+                    googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(locations.get(i), 10));
+
+                }
+
+                googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener()
+                {
+                    @Override
+                    public boolean onMarkerClick(@NonNull Marker marker)
+                    {
+                        String markerTitle = marker.getTitle();
+
+                        Intent markerIntent = new Intent(getActivity(), DonationDetailsActivity.class);
+                        markerIntent.putExtra("title", markerTitle);
+                        startActivity(markerIntent);
+                        Toast.makeText(getContext(), "Clicked marker", Toast.LENGTH_SHORT).show();
+
+                        return false;
+                    }
+                });
             }
         });
 

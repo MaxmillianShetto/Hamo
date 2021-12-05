@@ -5,8 +5,7 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".view.CommunityRepActivity"
-    android:paddingTop="?attr/actionBarSize">
+    tools:context=".view.CommunityRepActivity">
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/nav_view_community_rep"
@@ -23,13 +22,16 @@
     <fragment
         android:id="@+id/nav_host_fragment_activity_community_rep"
         class="androidx.navigation.fragment.NavHostFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="415dp"
+        android:layout_height="670dp"
+        android:layout_marginTop="4dp"
         app:defaultNavHost="true"
-        app:layout_constraintBottom_toTopOf="@id/nav_view_community_rep"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/nav_view_community_rep"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
         app:navGraph="@navigation/community_rep_navigation" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

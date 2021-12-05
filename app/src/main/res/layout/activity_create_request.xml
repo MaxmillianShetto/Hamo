@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/margin_between_items"
+    tools:context=".view.ui.home.CreateRequestActivity">
+
+
+    <EditText
+        android:id="@+id/summaryEditText"
+        android:layout_width="335dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="@dimen/small_padding"
+        android:ems="10"
+        android:hint="@string/summary"
+        android:inputType="textShortMessage" />
+
+    <EditText
+        android:id="@+id/descriptionEditText"
+        android:layout_width="336dp"
+        android:layout_height="73dp"
+        android:layout_marginTop="@dimen/small_padding"
+        android:ems="10"
+        android:hint="@string/description"
+        android:gravity="start|top"
+        android:inputType="textMultiLine"
+        tools:ignore="SpeakableTextPresentCheck" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/uploadImageTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/large_padding"
+            android:text="@string/upload_photo" />
+
+        <TextView
+            android:id="@+id/takePhotoTextViewRep"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/large_padding"
+            android:text="@string/take_photo" />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/uploadedImageView"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_gravity="center" />
+
+    <Button
+        android:id="@+id/submitRequestButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/large_padding"
+        android:layout_gravity="center"
+        android:text="@string/submit_request" />
+
+</LinearLayout>

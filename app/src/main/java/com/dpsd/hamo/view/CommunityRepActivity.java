@@ -32,8 +32,7 @@ public class CommunityRepActivity extends AppCompatActivity
 
 
         BottomNavigationView navView = findViewById(R.id.nav_view_community_rep);
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
+
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
                 R.id.navigation_home_community_rep, R.id.navigation_report_community_rep, R.id.navigation_profile_community_rep)
                 .build();

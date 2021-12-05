@@ -1,4 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="upload_photo">Sélectionnez une image</string>
+    <string name="take_photo">Prendre une photo</string>
+    <string name="description">Description</string>
+    <string name="donate">Donner</string>
+
     <string name="app_name">Hamo</string>
     <string name="title_home">Home</string>
     <string name="title_report">Report </string>
@@ -34,12 +40,8 @@
     <string name="email_phone_empty">Email or Phone number cannot be empty</string>
     <string name="password_empty">Password cannot be empty</string>
     <string name="connection_error">Connection error please try again later</string>
-    <string name="upload_photo"><u>Select an image</u></string>
-    <string name="take_photo"><u>Take a photo</u></string>
-    <string name="donate">Donate</string>
     <string name="create_request">Create Request</string>
     <string name="summary">Summary</string>
-    <string name="description">Description</string>
     <string name="submit_request">Submit Request</string>
 
     <string-array name="role_array">
