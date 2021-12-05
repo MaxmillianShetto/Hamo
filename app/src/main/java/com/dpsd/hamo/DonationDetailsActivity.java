@@ -1,10 +1,8 @@
-package com.dpsd.hamo.view.ui.home;
+package com.dpsd.hamo;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
-
-import com.dpsd.hamo.R;
 
 public class DonationDetailsActivity extends AppCompatActivity
 {

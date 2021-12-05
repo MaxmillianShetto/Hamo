@@ -2,6 +2,7 @@ package com.dpsd.hamo.view.ui.home;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -15,15 +16,19 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
+import com.dpsd.hamo.DonationDetailsActivity;
 import com.dpsd.hamo.R;
 import com.dpsd.hamo.controllers.ShowCoordinates;
 import com.dpsd.hamo.databinding.FragmentGiverHomeBinding;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 
@@ -110,7 +115,31 @@ public class GiverHomeFragment extends Fragment
             @Override
             public void onMapReady(@NonNull GoogleMap googleMap)
             {
-                Toast.makeText(getContext(),"Done", Toast.LENGTH_SHORT);
+                for (int i = 0; i < locations.size(); i++)
+                {
+                    MarkerOptions options = new MarkerOptions().position(locations.get(i)).title(String.valueOf(title.get(i)));
+                    googleMap.addMarker(options);
+
+                    googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(locations.get(i), 10));
+
+                }
+
+                googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener()
+                {
+                    @Override
+                    public boolean onMarkerClick(@NonNull Marker marker)
+                    {
+
+                        String markerTitle = marker.getTitle();
+
+                        Intent markerIntent = new Intent(getActivity(), DonationDetailsActivity.class);
+                        markerIntent.putExtra("title", markerTitle);
+                        startActivity(markerIntent);
+                        Toast.makeText(getContext(), "Clicked marker", Toast.LENGTH_SHORT).show();
+
+                        return false;
+                    }
+                });
             }
         });
 
@@ -129,15 +158,15 @@ public class GiverHomeFragment extends Fragment
         title.add("Bee");
         title.add("Dog");
 
-        showCoordinates = new ShowCoordinates(activity, providerClient, supportMapFragment);
+        showCoordinates = new ShowCoordinates(getActivity(), providerClient, supportMapFragment);
 
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
         {
             //getCurrentLocation();
-            showCoordinates.getCurrentLocation(activity, locations, title);
+            showCoordinates.getCurrentLocation(getActivity(), locations, title);
         } else
         {
-            ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 100);
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 100);
 
         }
 

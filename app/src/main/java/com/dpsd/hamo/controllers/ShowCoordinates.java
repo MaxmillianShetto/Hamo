@@ -1,6 +1,5 @@
 package com.dpsd.hamo.controllers;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -32,12 +31,12 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.FragmentActivity;
 
+import com.dpsd.hamo.DonationDetailsActivity;
 import com.dpsd.hamo.controller.permissions.PermissionFactory;
 import com.dpsd.hamo.controller.permissions.PermissionManager;
 import com.dpsd.hamo.controller.permissions.PermissionType;
-import com.dpsd.hamo.view.ui.home.DonationDetailsActivity;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.maps.*;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -59,9 +58,9 @@ public class ShowCoordinates extends Context
 {
     SupportMapFragment supportMapFragment;
     FusedLocationProviderClient providerClient;
-    AppCompatActivity mActivity;
+    FragmentActivity mActivity;
 
-    public ShowCoordinates(AppCompatActivity mActivity,FusedLocationProviderClient providerClient, SupportMapFragment supportMapFragment)
+    public ShowCoordinates(FragmentActivity mActivity, FusedLocationProviderClient providerClient, SupportMapFragment supportMapFragment)
     {
         this.providerClient = providerClient;
         this.supportMapFragment = supportMapFragment;
@@ -98,7 +97,7 @@ public class ShowCoordinates extends Context
         return latLng.longitude;
     }
 
-    public void getCurrentLocation(AppCompatActivity mActivity, ArrayList<LatLng> locations, ArrayList<String> title)
+    public void getCurrentLocation(FragmentActivity mActivity, ArrayList<LatLng> locations, ArrayList<String> title)
     {
         PermissionManager locationPermission = PermissionFactory.getPermission(PermissionType.ACCESS_FINE_LOCATION);
         if (!locationPermission.checkPermission(mActivity,(Activity) mActivity))
@@ -116,30 +115,7 @@ public class ShowCoordinates extends Context
                         @Override
                         public void onMapReady(@NonNull GoogleMap googleMap)
                         {
-                            for (int i = 0; i < locations.size(); i++)
-                            {
-                                MarkerOptions options = new MarkerOptions().position(locations.get(i)).title(String.valueOf(title.get(i)));
-                                googleMap.addMarker(options);
 
-                                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(locations.get(i), 10));
-
-                            }
-
-                            googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener()
-                            {
-                                @Override
-                                public boolean onMarkerClick(@NonNull Marker marker)
-                                {
-                                    Toast.makeText(mActivity, "Clicked marker", Toast.LENGTH_SHORT).show();
-                                    String markerTitle = marker.getTitle();
-
-                                    Intent markerIntent = new Intent(mActivity, DonationDetailsActivity.class);
-                                    markerIntent.putExtra("title", markerTitle);
-                                    startActivity(markerIntent);
-
-                                    return false;
-                                }
-                            });
 
                         }
                     });
