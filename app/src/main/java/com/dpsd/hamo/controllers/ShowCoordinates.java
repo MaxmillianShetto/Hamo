@@ -1,6 +1,7 @@
 package com.dpsd.hamo.controllers;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.ContentResolver;
@@ -26,11 +27,17 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.UserHandle;
 import android.view.Display;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+
+import com.dpsd.hamo.controller.permissions.PermissionFactory;
+import com.dpsd.hamo.controller.permissions.PermissionManager;
+import com.dpsd.hamo.controller.permissions.PermissionType;
+import com.dpsd.hamo.view.ui.home.DonationDetailsActivity;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.maps.*;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -93,10 +100,10 @@ public class ShowCoordinates extends Context
 
     public void getCurrentLocation(AppCompatActivity mActivity, ArrayList<LatLng> locations, ArrayList<String> title)
     {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+        PermissionManager locationPermission = PermissionFactory.getPermission(PermissionType.ACCESS_FINE_LOCATION);
+        if (!locationPermission.checkPermission(mActivity,(Activity) mActivity))
         {
-            ActivityCompat.requestPermissions(mActivity, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 100);
+            return;
         }
 
         Task<Location> locationTask = getProviderClient().getLastLocation();
@@ -123,11 +130,12 @@ public class ShowCoordinates extends Context
                                 @Override
                                 public boolean onMarkerClick(@NonNull Marker marker)
                                 {
+                                    Toast.makeText(mActivity, "Clicked marker", Toast.LENGTH_SHORT).show();
                                     String markerTitle = marker.getTitle();
 
-//                                    Intent markerIntent = new Intent(mActivity, DetailsActivity.class);
-//                                    markerIntent.putExtra("title", markerTitle);
-//                                    startActivity(markerIntent);
+                                    Intent markerIntent = new Intent(mActivity, DonationDetailsActivity.class);
+                                    markerIntent.putExtra("title", markerTitle);
+                                    startActivity(markerIntent);
 
                                     return false;
                                 }
