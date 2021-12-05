@@ -12,32 +12,18 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.dpsd.hamo.databinding.FragmentProfileBinding;
+import com.dpsd.hamo.databinding.FragmentCommunityRepProfileBinding;
 
-public class ProfileFragment extends Fragment
+public class CommunityRepProfileFragment extends Fragment
 {
-
-    private ProfileViewModel profileViewModel;
-    private FragmentProfileBinding binding;
+    private FragmentCommunityRepProfileBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState)
     {
-        profileViewModel =
-                new ViewModelProvider(this).get(ProfileViewModel.class);
-
-        binding = FragmentProfileBinding.inflate(inflater, container, false);
+        binding = FragmentCommunityRepProfileBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final TextView textView = binding.textNotifications;
-        profileViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>()
-        {
-            @Override
-            public void onChanged(@Nullable String s)
-            {
-                textView.setText(s);
-            }
-        });
         return root;
     }
 

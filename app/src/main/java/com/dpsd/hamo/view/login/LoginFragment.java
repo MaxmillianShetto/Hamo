@@ -1,8 +1,8 @@
 package com.dpsd.hamo.view.login;
 
+import android.content.Intent;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -11,19 +11,30 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dpsd.hamo.R;
-import com.dpsd.hamo.databinding.FragmentHomeBinding;
+import com.dpsd.hamo.controllers.Login;
 import com.dpsd.hamo.databinding.FragmentLoginBinding;
+import com.dpsd.hamo.dbmodel.DatabaseHandle;
+import com.dpsd.hamo.dbmodel.UsersCollection;
+import com.dpsd.hamo.view.UserActivityFactory;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link LoginFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class LoginFragment extends Fragment
+public class LoginFragment extends Fragment implements Login, AdapterView.OnItemSelectedListener
 {
 
     // TODO: Rename parameter arguments, choose names that match
@@ -37,21 +48,24 @@ public class LoginFragment extends Fragment
     private String mParam2;
     public TextView signUp;
     public TextView forgotPassword;
+    public TextView errorEmailOrPhoneTextView;
+    public TextView errorPasswordTextView;
+    public Button loginButton;
+    public EditText emailOrPhoneNumberEditText;
+    public EditText passwordEditText;
+
+    private String role = "";
+    private Map<String, String> roleMap;
+
+
+
+    public Spinner roleSpinner;
 
     public LoginFragment()
     {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment LoginFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static LoginFragment newInstance(String param1, String param2)
     {
         LoginFragment fragment = new LoginFragment();
@@ -82,6 +96,16 @@ public class LoginFragment extends Fragment
         View root = binding.getRoot();
 
         signUp = binding.joinUs;
+        loginButton = binding.loginButton;
+        forgotPassword = binding.forgotPassword;
+        emailOrPhoneNumberEditText = binding.emailOrPasswordEditText;
+        passwordEditText = binding.passwordEditText;
+        errorEmailOrPhoneTextView = binding.errorEmailOrPhoneTextView;
+        errorPasswordTextView = binding.errorPasswordTextView;
+
+        roleSpinner = binding.roleLoginSpinner;
+        roleSpinner.setOnItemSelectedListener(this);
+
         signUp.setOnClickListener(new View.OnClickListener()
         {
 
@@ -91,7 +115,7 @@ public class LoginFragment extends Fragment
             }
         });
 
-        forgotPassword = binding.forgotPassword;
+
         forgotPassword.setOnClickListener(new View.OnClickListener()
         {
 
@@ -100,6 +124,35 @@ public class LoginFragment extends Fragment
                 loadForgotPassword(v);
             }
         });
+
+
+        loginButton.setOnClickListener(new View.OnClickListener()
+        {
+            public void onClick(View v)
+            {
+                UsersCollection collection = new UsersCollection(DatabaseHandle.db);
+                String userNameOrPhoneNumber = emailOrPhoneNumberEditText.getText().toString();
+                String password = passwordEditText.getText().toString();
+                if(role.trim().equals(""))
+                {
+                    role = roleMap.get(roleSpinner.getSelectedItem().toString());
+                }
+                collection.isUser(userNameOrPhoneNumber, password
+                            , role.trim(), LoginFragment.this);
+                Log.i("Login", "here");
+            }
+        });
+
+        roleMap = new HashMap<String, String>();
+        roleMap.put(getString(R.string.giver), getString(R.string.roleGiver));
+        roleMap.put(getString(R.string.community_rep), getString(R.string.roleRep));
+        roleMap.put(getString(R.string.admin), getString(R.string.roleAdmin));
+
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),
+                R.array.role_array , android.R.layout.simple_spinner_item);
+
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        roleSpinner.setAdapter(adapter);
 
         return root;
     }
@@ -122,5 +175,48 @@ public class LoginFragment extends Fragment
         fragmentTransaction.replace(R.id.nav_fragment_activity_login, forgotPasswordFragment)
                 .addToBackStack(null)
                 .commit();
+    }
+
+    @Override
+    public void proceedToHomePage(String role)
+    {
+        Toast.makeText(getContext(),"successful", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(getActivity(), (Class<?>) UserActivityFactory.loadActivity(role));
+        intent.putExtra("role", role);
+        startActivity(intent);
+    }
+
+    @Override
+    public void fieldsEmptyErrorMessage()
+    {
+        String emailOrPhoneNumber = emailOrPhoneNumberEditText.getText().toString();
+        String password = passwordEditText.getText().toString();
+
+        if(emailOrPhoneNumber.trim().equals(""))
+            errorEmailOrPhoneTextView.setText(R.string.email_phone_empty);
+
+        if(password.trim().equals(""))
+            errorPasswordTextView.setText(R.string.password_empty);
+    }
+
+    @Override
+    public void invalidLoginErrorMessage()
+    {
+        Toast.makeText(getContext(), "Invalid username or password", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void connectionErrorMessage()
+    {
+        Toast.makeText(getContext(), R.string.connection_error, Toast.LENGTH_SHORT).show();
+    }
+
+    public void onItemSelected(AdapterView<?> parent, View view,
+                               int pos, long id) {
+        role = roleMap.get(roleSpinner.getSelectedItem().toString());
+    }
+
+    public void onNothingSelected(AdapterView<?> parent) {
+        // Another interface callback
     }
 }

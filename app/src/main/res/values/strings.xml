@@ -16,12 +16,27 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="login_fragment">Login</string>
     <string name="signup_fragment">Sign Up</string>
+    <string name="roleGiver">giver</string>
+    <string name="roleRep">rep</string>
+    <string name="roleAdmin">admin</string>
+    <string name="giver">Giver</string>
+    <string name="community_rep">Community Representative</string>
+    <string name="admin">Admin</string>
     <string name="forgot_password_fragment">Forgot Password</string>
     <string name="email_or_phone_number">Email/ Phone number</string>
     <string name="password">Password</string>
+    <string name="full_name">Full name</string>
     <string name="join_us">Join us</string>
     <string name="action_login">Login</string>
     <string name="forgot_password">Forgot Password</string>
     <string name="confirm_password">Confirm password</string>
     <string name="send_code">Send code</string>
+    <string name="email_phone_empty">Email or Phone number cannot be empty</string>
+    <string name="password_empty">Password cannot be empty</string>
+    <string name="connection_error">Connection error please try again later</string>
+
+    <string-array name="role_array">
+        <item>Giver</item>
+        <item>Community Representative</item>
+    </string-array>
 </resources>

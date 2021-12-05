@@ -2,13 +2,15 @@ package com.dpsd.hamo.dbmodel;
 
 
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import com.dpsd.hamo.controllers.Login;
+import com.dpsd.hamo.controllers.SignUp;
 import com.dpsd.hamo.dbmodel.dbhelpers.GpsLocation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -19,15 +21,17 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-public class UsersCollection {
+public class UsersCollection
+{
     public static final String name="users";
     //fields
-    public static final String fullNameField = "fullname";
-    public static final String usernameField="username";
+    public static final String emailField = "email";
+    public static final String phoneNumberField = "phoneNumber";
+    public static final String fullNameField ="username";
     public static final String passwordField="password";
     public static final String roleField="role";
     public static final String stateField="state";
-    public static final String gpsLocationsField ="gpslocations";
+    public static final String gpsLocationsField ="gpsLocations";
 
     String TAG = "usersCollection";
 
@@ -40,13 +44,26 @@ public class UsersCollection {
         db = dbhandle;
     }
 
-    public void addUser(String fullname, String username, String password, String role,
-                        ArrayList<GpsLocation> locations, Login login){
+    public void addUser(String emailOrPhoneNumber, String fullName, String password, String role,
+                        ArrayList<GpsLocation> locations, SignUp signUp){
         try
         {
             Map<String, Object> record = new HashMap<>();
-            record.put(fullNameField,fullname);
-            record.put(usernameField,username);
+            String regexEmail = "^(.+)@(.+)$";
+            String regexPhoneNumber = "^\\d{10}$";
+            Pattern pattern = Pattern.compile(regexEmail);
+
+            if (pattern.matcher(emailOrPhoneNumber).matches())
+            {
+                record.put(emailField, emailOrPhoneNumber);
+                record.put(phoneNumberField, "");
+            }
+            else if (pattern.compile(regexPhoneNumber).matcher(emailOrPhoneNumber).matches())
+            {
+                record.put(emailField, "");
+                record.put(phoneNumberField, emailOrPhoneNumber);
+            }
+            record.put(fullNameField,fullName);
             record.put(passwordField,password);
             record.put(roleField,role);
             record.put(stateField,"active");
@@ -57,7 +74,7 @@ public class UsersCollection {
                 public void onComplete(@NonNull Task<DocumentReference> task) {
                     if(task.isSuccessful())
                     {
-                        //call method that takes user to the right
+                        signUp.proceedToHomePage(role);
                     }
                     else
                     {
@@ -72,41 +89,60 @@ public class UsersCollection {
         }
     }
 
-    public void isUser(String username,String password,String role,Login login){
-        if(username.trim().equals("") || password.trim().equals(""))
+    public void isUser(String emailOrPhoneNumber, String password, String role, Login login){
+        if(emailOrPhoneNumber.trim().equals("") || password.trim().equals(""))
         {
-            //show error message and return
+            login.fieldsEmptyErrorMessage();
             return;
         }
+        Log.i("Login", "first part");
 
         //use value holder to get user's full name
         try
         {
-            db.collection(name).get()
-                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            String regexEmail = "^(.+)@(.+)$";
+            String regexPhoneNumber = "^\\d{10}$";
+            Pattern pattern = Pattern.compile(regexEmail);
+            String field = emailField;
+            if(pattern.matcher(emailOrPhoneNumber).matches())
+            {
+                field = emailField;
+            }
+            else if (pattern.compile(regexPhoneNumber).matcher(emailOrPhoneNumber).matches())
+            {
+                field = phoneNumberField;
+            }
+            else
+            {
+                login.invalidLoginErrorMessage();
+                return;
+            }
+            String finalField = field;
+            db.collection(name).whereEqualTo(field,emailOrPhoneNumber).get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
+                    {
                         @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            if(task.isSuccessful())
+                        public void onComplete(@NonNull Task<QuerySnapshot> task)
+                        {
+                            if (task.isSuccessful())
                             {
                                 for (QueryDocumentSnapshot document: task.getResult())
                                 {
-                                    if(document.get(usernameField).toString().equals(username)
-                                            && document.get(passwordField).toString().equals(password) &&
-                                            document.get(roleField).toString().equals(role))
+                                    boolean emailIsValid = document.get(finalField).toString().trim().equals(emailOrPhoneNumber);
+                                    boolean passwordIsValid = document.get(passwordField).toString().trim().equals(password);
+                                    boolean isRole = document.get(roleField).toString().trim().equals(role);
+                                    if(emailIsValid && passwordIsValid && isRole)
                                     {
-                                       // exec.processLogin();
-                                        //do something with this info
-                                       // String userfullname = document.get(fullNameField).toString();
-                                        break;
+                                        login.proceedToHomePage(role);
+                                    }
+                                    else
+                                    {
+                                        login.invalidLoginErrorMessage();
                                     }
                                 }
                             }
-                            else
-                            {
-                                //stay on same page and display error message
-                            }
-                        }
-                    });
+                        }});
+
         }
         catch (Exception ex)
         {
@@ -119,8 +155,8 @@ public class UsersCollection {
         try
         {
             CollectionReference usersRef = db.collection(name);
-            //query document for user matching username, password, and role
-            Query query = usersRef.whereEqualTo(usernameField,username)
+            //query document for user matching username, password, and Role
+            Query query = usersRef.whereEqualTo(fullNameField,username)
                     .whereEqualTo(passwordField,password)
                     .whereEqualTo(roleField,role);
 

@@ -1,5 +1,6 @@
 package com.dpsd.hamo.view.login;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -9,18 +10,31 @@ import androidx.fragment.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.dpsd.hamo.R;
-import com.dpsd.hamo.databinding.FragmentLoginBinding;
+import com.dpsd.hamo.controllers.SignUp;
 import com.dpsd.hamo.databinding.FragmentSignUpBinding;
+import com.dpsd.hamo.dbmodel.DatabaseHandle;
+import com.dpsd.hamo.dbmodel.UsersCollection;
+import com.dpsd.hamo.dbmodel.dbhelpers.GpsLocation;
+import com.dpsd.hamo.view.UserActivityFactory;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link SignUpFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class SignUpFragment extends Fragment
+public class SignUpFragment extends Fragment implements SignUp, AdapterView.OnItemSelectedListener
 {
 
     // TODO: Rename parameter arguments, choose names that match
@@ -32,8 +46,17 @@ public class SignUpFragment extends Fragment
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private String role = "";
+    private Map<String, String> roleMap;
 
     public TextView loginTransitionTextView;
+    public EditText emailOrPhoneNumberEditText;
+    public EditText passwordEditText;
+    public EditText confirmPasswordEditText;
+    public EditText fullNameEditText;
+    public Button singUpButton;
+    public Spinner roleSpinner;
+
 
     public SignUpFragment()
     {
@@ -79,6 +102,17 @@ public class SignUpFragment extends Fragment
         View root = binding.getRoot();
 
         loginTransitionTextView = binding.loginTransitionTextView;
+
+        emailOrPhoneNumberEditText = binding.emailOrPhoneNumberEditTextSignUp;
+        passwordEditText = binding.passwordEditTextSignUp;
+        confirmPasswordEditText = binding.confirmPasswordEditText;
+        fullNameEditText = binding.fullNameEditText;
+
+        singUpButton = binding.signUpButton;
+
+        roleSpinner = binding.roleSpinner;
+        roleSpinner.setOnItemSelectedListener(this);
+
         loginTransitionTextView.setOnClickListener(new View.OnClickListener()
         {
 
@@ -87,6 +121,36 @@ public class SignUpFragment extends Fragment
                 loadLoginPage(v);
             }
         });
+
+        singUpButton.setOnClickListener(new View.OnClickListener()
+        {
+
+            public void onClick(View v)
+            {
+                UsersCollection collection = new UsersCollection(DatabaseHandle.db);
+                String fullName = fullNameEditText.getText().toString();
+                String userEmailOrPhoneNumber = emailOrPhoneNumberEditText.getText().toString();
+                String password = passwordEditText.getText().toString();
+                if(role.trim().equals(""))
+                {
+                    role = roleMap.get(roleSpinner.getSelectedItem().toString());
+                }
+                ArrayList<GpsLocation> locale = new ArrayList<GpsLocation>();
+
+                collection.addUser(userEmailOrPhoneNumber, fullName, password, role,
+                        locale, SignUpFragment.this);
+            }
+        });
+
+        roleMap = new HashMap<String, String>();
+        roleMap.put(getString(R.string.giver), getString(R.string.roleGiver));
+        roleMap.put(getString(R.string.community_rep), getString(R.string.roleRep));
+
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),
+                R.array.role_array , android.R.layout.simple_spinner_item);
+
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        roleSpinner.setAdapter(adapter);
 
         return root;
     }
@@ -99,5 +163,27 @@ public class SignUpFragment extends Fragment
         fragmentTransaction.replace(R.id.nav_fragment_activity_login, loginFragment)
                 .addToBackStack(null)
                 .commit();
+    }
+
+    public void onItemSelected(AdapterView<?> parent, View view,
+                               int pos, long id) {
+        role = roleMap.get(roleSpinner.getSelectedItem().toString());
+    }
+
+    public void onNothingSelected(AdapterView<?> parent) {
+        // Another interface callback
+    }
+
+    @Override
+    public void proceedToHomePage(String role)
+    {
+        Intent intent = new Intent(getActivity(), (Class<?>) UserActivityFactory.loadActivity(role));
+        startActivity(intent);
+    }
+
+    @Override
+    public void showErrorMessage()
+    {
+
     }
 }

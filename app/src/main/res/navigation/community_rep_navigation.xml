@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/community_rep_navigation"
+    app:startDestination="@+id/navigation_home_community_rep">
+
+    <fragment
+        android:id="@+id/navigation_home_community_rep"
+        android:name="com.dpsd.hamo.view.ui.home.CommunityRepHomeFragment"
+        android:label="@string/title_home"
+        tools:layout="@layout/fragment_giver_home" />
+
+    <fragment
+        android:id="@+id/navigation_report_community_rep"
+        android:name="com.dpsd.hamo.view.ui.report.CommunityRepReportFragment"
+        android:label="@string/title_report"
+        tools:layout="@layout/fragment_giver_report" />
+
+    <fragment
+        android:id="@+id/navigation_profile_community_rep"
+        android:name="com.dpsd.hamo.view.ui.profile.CommunityRepProfileFragment"
+        android:label="@string/title_profile"
+        tools:layout="@layout/fragment_community_rep_profile" />
+</navigation>
