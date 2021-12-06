@@ -62,6 +62,11 @@ public class ShowCoordinates extends Context
         this.mActivity = mActivity;
     }
 
+    public ShowCoordinates()
+    {
+
+    }
+
     public void setProviderClient(FusedLocationProviderClient providerClient)
     {
         this.providerClient = providerClient;

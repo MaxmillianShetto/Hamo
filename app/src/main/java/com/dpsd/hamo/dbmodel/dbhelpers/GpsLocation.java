@@ -5,6 +5,13 @@ public class GpsLocation {
     public String latitude;
     public String longitude;
 
+    public GpsLocation()
+    {
+        locationName = "Gasabo";
+        latitude = "-1.9422403";
+        longitude = "30.1201112";
+    }
+
     public GpsLocation(String locName,String lat, String lon)
     {
         locationName = locName;
@@ -18,6 +25,8 @@ public class GpsLocation {
         longitude = lon;
     }
 
+
+
     public void setLatitude(String newLatitude)
     {
         latitude = newLatitude;
@@ -25,5 +34,9 @@ public class GpsLocation {
     public void setLongitude(String newLongitude)
     {
         longitude = newLongitude;
+    }
+    public void setLocationName(String newLocation)
+    {
+        locationName = newLocation;
     }
 }

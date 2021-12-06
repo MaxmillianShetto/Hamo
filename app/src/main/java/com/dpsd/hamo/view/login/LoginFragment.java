@@ -24,6 +24,7 @@ import com.dpsd.hamo.controllers.Login;
 import com.dpsd.hamo.databinding.FragmentLoginBinding;
 import com.dpsd.hamo.dbmodel.DatabaseHandle;
 import com.dpsd.hamo.dbmodel.UsersCollection;
+import com.dpsd.hamo.dbmodel.dbhelpers.LocalStorage;
 import com.dpsd.hamo.view.UserActivityFactory;
 
 import java.util.HashMap;
@@ -171,6 +172,16 @@ public class LoginFragment extends Fragment implements Login, AdapterView.OnItem
         Intent intent = new Intent(getActivity(), (Class<?>) UserActivityFactory.loadActivity(role));
         intent.putExtra("role", role);
         startActivity(intent);
+    }
+
+    @Override
+    public void proceedToHomePage(String role, String userData)
+    {
+        Toast.makeText(getContext(),"successful", Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(getActivity(), (Class<?>) UserActivityFactory.loadActivity(role));
+        intent.putExtra("role", role);
+        startActivity(intent);
+        LocalStorage.AddKeyValue("userData", userData, getContext());
     }
 
     @Override

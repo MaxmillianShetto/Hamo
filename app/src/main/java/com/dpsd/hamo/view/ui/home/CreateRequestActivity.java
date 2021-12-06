@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,6 +17,8 @@ import android.widget.Toast;
 
 import com.dpsd.hamo.R;
 
+import java.io.IOException;
+
 public class CreateRequestActivity extends AppCompatActivity
 {
     TextView uploadImageTextView;
@@ -24,6 +27,7 @@ public class CreateRequestActivity extends AppCompatActivity
     EditText summaryEditText;
     ImageView uploadedImageRep;
     Button submitRequest;
+    Bitmap uploadedPhotoToSave;
 
     int REQUEST_CODE_UPLOAD = 1;
     int REQUEST_CODE_CAMERA = 100;
@@ -62,6 +66,29 @@ public class CreateRequestActivity extends AppCompatActivity
                 captureImage();
             }
         });
+
+        submitRequest.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                submitDonationRequest();
+            }
+        });
+    }
+
+    public void submitDonationRequest(){
+        String summary = summaryEditText.getText().toString();
+        String description = descriptionEditText.getText().toString();
+        if (uploadedPhotoToSave != null)
+        {
+            Log.i(summary, description + "image upload");
+        }
+        else
+        {
+            Log.i(summary, description + "no image");
+        }
+
     }
 
     private void uploadImageFromPhone()
@@ -88,10 +115,19 @@ public class CreateRequestActivity extends AppCompatActivity
         {
             imageUri = data.getData();
             uploadedImageRep.setImageURI(imageUri);
+            try
+            {
+                uploadedPhotoToSave = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+            }
         }
         else if (requestCode == REQUEST_CODE_CAMERA && resultCode == RESULT_OK)
         {
             Bitmap capturedImage = (Bitmap) data.getExtras().get("data");
+            uploadedPhotoToSave = capturedImage;
             uploadedImageRep.setImageBitmap(capturedImage);
         }
 

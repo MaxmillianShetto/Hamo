@@ -1,12 +1,18 @@
 package com.dpsd.hamo.view.login;
 
 import android.content.Intent;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationProvider;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,18 +22,30 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.dpsd.hamo.R;
+import com.dpsd.hamo.controller.permissions.PermissionFactory;
+import com.dpsd.hamo.controller.permissions.PermissionManager;
+import com.dpsd.hamo.controller.permissions.PermissionType;
 import com.dpsd.hamo.controllers.SignUp;
 import com.dpsd.hamo.databinding.FragmentSignUpBinding;
 import com.dpsd.hamo.dbmodel.DatabaseHandle;
 import com.dpsd.hamo.dbmodel.UsersCollection;
 import com.dpsd.hamo.dbmodel.dbhelpers.GpsLocation;
 import com.dpsd.hamo.view.UserActivityFactory;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -36,16 +54,9 @@ import java.util.Map;
  */
 public class SignUpFragment extends Fragment implements SignUp, AdapterView.OnItemSelectedListener
 {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
     private FragmentSignUpBinding binding;
+    private LocationProvider locationProvider;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
     private String role = "";
     private Map<String, String> roleMap;
 
@@ -63,21 +74,10 @@ public class SignUpFragment extends Fragment implements SignUp, AdapterView.OnIt
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment SignUpFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static SignUpFragment newInstance(String param1, String param2)
     {
         SignUpFragment fragment = new SignUpFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -86,11 +86,6 @@ public class SignUpFragment extends Fragment implements SignUp, AdapterView.OnIt
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null)
-        {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -122,24 +117,37 @@ public class SignUpFragment extends Fragment implements SignUp, AdapterView.OnIt
             }
         });
 
-        singUpButton.setOnClickListener(new View.OnClickListener()
-        {
-
-            public void onClick(View v)
+        singUpButton.setOnClickListener(v -> {
+            UsersCollection collection = new UsersCollection(DatabaseHandle.db);
+            String fullName = fullNameEditText.getText().toString();
+            String userEmailOrPhoneNumber = emailOrPhoneNumberEditText.getText().toString();
+            String password = passwordEditText.getText().toString();
+            if(role.trim().equals(""))
             {
-                UsersCollection collection = new UsersCollection(DatabaseHandle.db);
-                String fullName = fullNameEditText.getText().toString();
-                String userEmailOrPhoneNumber = emailOrPhoneNumberEditText.getText().toString();
-                String password = passwordEditText.getText().toString();
-                if(role.trim().equals(""))
-                {
-                    role = roleMap.get(roleSpinner.getSelectedItem().toString());
-                }
-                ArrayList<GpsLocation> locale = new ArrayList<GpsLocation>();
-
-                collection.addUser(userEmailOrPhoneNumber, fullName, password, role,
-                        locale, SignUpFragment.this);
+                role = roleMap.get(roleSpinner.getSelectedItem().toString());
             }
+
+            String regexEmail = "^(.+)@(.+)$";
+            String regexPhoneNumber = "^\\d{10}$";
+            Pattern pattern = Pattern.compile(regexEmail);
+            String email = "";
+            String phoneNumber = "";
+            if(pattern.matcher(userEmailOrPhoneNumber).matches())
+            {
+                email = userEmailOrPhoneNumber;
+            }
+            else if (pattern.compile(regexPhoneNumber).matcher(userEmailOrPhoneNumber).matches())
+            {
+                phoneNumber = userEmailOrPhoneNumber;
+            }
+
+            PermissionManager permissionManager = PermissionFactory.getPermission((PermissionType.ACCESS_FINE_LOCATION));
+            if (permissionManager.checkPermission(getContext(), getActivity()))
+            {
+                saveUserDetails(fullName, email, phoneNumber, password,role,"",
+                         SignUpFragment.this, collection);
+            }
+
         });
 
         roleMap = new HashMap<String, String>();
@@ -184,6 +192,103 @@ public class SignUpFragment extends Fragment implements SignUp, AdapterView.OnIt
     @Override
     public void showErrorMessage()
     {
+        Toast.makeText(getContext(), "Sign up unsuccessful, please try again later", Toast.LENGTH_SHORT);
+    }
 
+    public void saveUserDetails(String fullName, String email, String phoneNumber, String password,
+                                String role, String establishment, SignUpFragment signUpFragment,
+                                UsersCollection collection)
+    {
+        Toast.makeText(getContext(), "Getting location details", Toast.LENGTH_SHORT).show();
+
+        LocationProvider provider = locationProvider;
+        GpsLocation currentLocation = new GpsLocation();
+
+        FusedLocationProviderClient fusedLocationClient = LocationServices
+                .getFusedLocationProviderClient(getContext());
+
+        PermissionManager permissionManager = PermissionFactory
+                .getPermission(PermissionType.ACCESS_FINE_LOCATION);
+
+        if (permissionManager.checkPermission(getContext(), getActivity()))
+        {
+            fusedLocationClient.getLastLocation()
+                    .addOnSuccessListener(new OnSuccessListener<Location>()
+            {
+                @Override
+                public void onSuccess(Location location)
+                {
+                    System.out.println(location);
+                    if (location != null)
+                    {
+                        Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
+                        List<Address> addressList = null;
+
+                        try
+                        {
+                            addressList = geocoder.getFromLocation(
+                                    location.getLatitude(), location.getLongitude(), 1);
+                            if (addressList != null & addressList.size() > 0)
+                            {
+                                Address currentAddress = addressList.get(0);
+
+                                collection.addUser(fullName, email, phoneNumber, password,role,"",
+                                        getLocation(currentAddress, currentLocation), SignUpFragment.this);
+                            }
+                        }
+                        catch (IOException e)
+                        {
+                            e.printStackTrace();
+                        }
+
+                    }
+
+
+                }
+            })
+                    .addOnFailureListener(new OnFailureListener()
+                    {
+                        @Override
+                        public void onFailure(@NonNull Exception e)
+                        {
+                            Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
+                            List<Address> addressList = null;
+
+                            try
+                            {
+                                addressList = geocoder.getFromLocation(
+                                        -1.9422403,30.1201112, 1);
+
+                                collection.addUser(fullName, email, phoneNumber, password,role,"",
+                                        getLocation(addressList.get(0), currentLocation), SignUpFragment.this);
+                            }
+                            catch (IOException er)
+                            {
+                                er.printStackTrace();
+                            }
+                            Log.i("Location", addressList.get(0).toString());
+
+
+
+                        }
+                    });
+        }
+    }
+
+    public ArrayList<GpsLocation> getLocation(Address currentAdd, GpsLocation currentLoc)
+    {
+        StringBuilder locationDetails = new StringBuilder();
+        locationDetails.append("Area: " +currentAdd.getSubAdminArea());
+        String moreDetails = currentAdd.getThoroughfare();
+        if (!moreDetails.contains("Unnamed"))
+        {
+            locationDetails.append(" Details:" + moreDetails);
+        }
+        currentLoc.setLocationName(locationDetails.toString());
+        currentLoc.setLatitude(Double.toString(currentAdd.getLatitude()));
+        currentLoc.setLongitude(Double.toString(currentAdd.getLongitude()));
+        ArrayList<GpsLocation> locations = new ArrayList<GpsLocation>();
+        locations.add(currentLoc);
+        return locations;
     }
 }

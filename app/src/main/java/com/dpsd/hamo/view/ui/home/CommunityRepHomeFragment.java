@@ -122,7 +122,6 @@ public class CommunityRepHomeFragment extends Fragment
                         Intent markerIntent = new Intent(getActivity(), DonationDetailsActivity.class);
                         markerIntent.putExtra("title", markerTitle);
                         startActivity(markerIntent);
-                        Toast.makeText(getContext(), "Clicked marker", Toast.LENGTH_SHORT).show();
 
                         return false;
                     }
