@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -14,6 +15,7 @@ import com.dpsd.hamo.controllers.RequestAdder;
 import com.dpsd.hamo.dbmodel.dbhelpers.Donor;
 import com.dpsd.hamo.dbmodel.dbhelpers.FileStorage;
 import com.dpsd.hamo.dbmodel.dbhelpers.GivingInfo;
+import com.dpsd.hamo.dbmodel.dbhelpers.LocalStorage;
 import com.dpsd.hamo.dbmodel.dbhelpers.RequestInfo;
 import com.dpsd.hamo.dbmodel.dbhelpers.RequestSummary;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -56,6 +58,8 @@ public class DonationRequestCollection {
         if(summary.trim().equals("")||details.trim().equals("")|| repId.trim().equals(""))
         {
             //show message of invalid activity
+            Log.d(TAG, "addDonationRequest: "+"didn't pass validation: summary:"+summary+
+                    " details: "+details+" repId:"+repId);
             return;
         }
         try
@@ -75,11 +79,12 @@ public class DonationRequestCollection {
                     if(task.isSuccessful())
                     {
                        DocumentReference doc = task.getResult();
-                         requestAdder.saveImage(doc.getId());
+                       Log.i("Donation req", "saved");
+                       requestAdder.saveImage(doc.getId());
                     }
                     else
                     {
-
+                        Log.e("Donation req", "not saved");
                     }
                 }
             });
@@ -87,6 +92,28 @@ public class DonationRequestCollection {
         catch (Exception ex)
         {
             Log.d(TAG, "addDonationRequest: "+ex.getMessage());
+        }
+    }
+
+    public void updateImageUri(String requestId,String dburi)
+    {
+        try
+        {
+            db.collection(name).document(requestId).update(imageUriField,dburi).addOnCompleteListener(
+                    new OnCompleteListener<Void>()
+                    {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task)
+                        {
+                            if(task.isSuccessful())
+                                Log.d(TAG, "onComplete: db uri updated");
+                        }
+                    }
+            );
+        }
+        catch (Exception ex)
+        {
+            Log.d(TAG, "updateImageUri: "+ex.getMessage());
         }
     }
 

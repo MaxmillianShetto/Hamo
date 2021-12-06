@@ -78,6 +78,7 @@ public class CreateRequestActivity extends AppCompatActivity implements RequestA
             @Override
             public void onClick(View v)
             {
+                Toast.makeText(getApplicationContext(), "button clicked", Toast.LENGTH_SHORT).show();
                 submitDonationRequest();
             }
         });
@@ -90,7 +91,7 @@ public class CreateRequestActivity extends AppCompatActivity implements RequestA
 
         DonationRequestCollection dcol = new DonationRequestCollection(DatabaseHandle.db);
         dcol.addDonationRequest(summary,description,
-                LocalStorage.getValue("rep",this),this);
+                LocalStorage.getValue("userId",this),this);
 
 
     }

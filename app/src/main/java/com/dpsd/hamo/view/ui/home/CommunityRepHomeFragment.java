@@ -20,6 +20,7 @@ import com.dpsd.hamo.R;
 import com.dpsd.hamo.controllers.ShowCoordinates;
 import com.dpsd.hamo.databinding.FragmentCommunityRepHomeBinding;
 import com.dpsd.hamo.databinding.FragmentGiverHomeBinding;
+import com.dpsd.hamo.dbmodel.dbhelpers.LocalStorage;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -83,6 +84,9 @@ public class CommunityRepHomeFragment extends Fragment
     {
         binding = FragmentCommunityRepHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+        String dataSaved = LocalStorage.getValue("userId", getContext()) +
+                " " + LocalStorage.getValue("role", getContext());
+        Toast.makeText(getContext(),dataSaved, Toast.LENGTH_SHORT).show();
 
         fab = binding.extendedFab;
 

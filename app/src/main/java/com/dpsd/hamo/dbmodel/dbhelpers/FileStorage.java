@@ -10,6 +10,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.dpsd.hamo.dbmodel.DatabaseHandle;
+import com.dpsd.hamo.dbmodel.DonationRequestCollection;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.FirebaseStorage;
@@ -74,7 +76,8 @@ public class FileStorage {
                 public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                     if(task.isSuccessful())
                     {
-                        Toast.makeText(context,"Image saved.",Toast.LENGTH_SHORT).show();
+                        DonationRequestCollection dcol = new DonationRequestCollection(DatabaseHandle.db);
+                        dcol.updateImageUri(requestId,dburl);
                     }
                     else
                     {

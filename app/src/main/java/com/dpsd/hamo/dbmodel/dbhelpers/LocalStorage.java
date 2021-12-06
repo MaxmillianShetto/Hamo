@@ -18,5 +18,6 @@ public class LocalStorage {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString(key,value);
+        editor.commit();
     }
 }
