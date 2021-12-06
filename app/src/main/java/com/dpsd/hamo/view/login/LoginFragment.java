@@ -175,13 +175,14 @@ public class LoginFragment extends Fragment implements Login, AdapterView.OnItem
     }
 
     @Override
-    public void proceedToHomePage(String role, String userData)
+    public void proceedToHomePage(String role, String userId)
     {
         Toast.makeText(getContext(),"successful", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(getActivity(), (Class<?>) UserActivityFactory.loadActivity(role));
-        intent.putExtra("role", role);
+        LocalStorage.AddKeyValue("userId", userId, getContext());
+        LocalStorage.AddKeyValue("role", role, getContext());
         startActivity(intent);
-        LocalStorage.AddKeyValue("userData", userData, getContext());
+
     }
 
     @Override

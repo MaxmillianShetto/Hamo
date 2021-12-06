@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.os.StrictMode;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +29,8 @@ import com.dpsd.hamo.R;
 import com.dpsd.hamo.controller.permissions.PermissionFactory;
 import com.dpsd.hamo.controller.permissions.PermissionManager;
 import com.dpsd.hamo.controller.permissions.PermissionType;
+import com.dpsd.hamo.controllers.EmailSender;
+import com.dpsd.hamo.controllers.Messenger;
 import com.dpsd.hamo.controllers.SignUp;
 import com.dpsd.hamo.databinding.FragmentSignUpBinding;
 import com.dpsd.hamo.dbmodel.DatabaseHandle;
@@ -59,6 +62,8 @@ public class SignUpFragment extends Fragment implements SignUp, AdapterView.OnIt
 
     private String role = "";
     private Map<String, String> roleMap;
+    private String templateWelcome = ", welcome to Hamo platform. \n" +
+        "Thank you for joining us. Ready to make an impact!!!";
 
     public TextView loginTransitionTextView;
     public EditText emailOrPhoneNumberEditText;
@@ -67,6 +72,7 @@ public class SignUpFragment extends Fragment implements SignUp, AdapterView.OnIt
     public EditText fullNameEditText;
     public Button singUpButton;
     public Spinner roleSpinner;
+
 
 
     public SignUpFragment()
@@ -187,6 +193,39 @@ public class SignUpFragment extends Fragment implements SignUp, AdapterView.OnIt
     {
         Intent intent = new Intent(getActivity(), (Class<?>) UserActivityFactory.loadActivity(role));
         startActivity(intent);
+    }
+
+    public void sendSignUpEmail(String emailRecipient, String fullName)
+    {
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+
+        StrictMode.setThreadPolicy(policy);
+
+        EmailSender emailSender = new EmailSender();
+        StringBuilder emailBody = new StringBuilder();
+        emailBody.append("Hello ");
+        emailBody.append(fullName);
+        emailBody.append(templateWelcome);
+        String subject = "Welcome to Hamo";
+        try
+        {
+            emailSender.sendSignUpEmail(subject,emailBody.toString(), emailRecipient);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void sendSignUpSms(String phoneNumber, String name)
+    {
+        Messenger messenger = new Messenger();
+        StringBuilder message = new StringBuilder();
+        message.append("Hello ");
+        message.append(name);
+        message.append(templateWelcome);
+        messenger.sendMessage(getContext(),getActivity(),phoneNumber, message.toString());
     }
 
     @Override

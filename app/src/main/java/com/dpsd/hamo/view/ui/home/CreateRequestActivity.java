@@ -2,6 +2,7 @@ package com.dpsd.hamo.view.ui.home;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.appsearch.StorageInfo;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -16,10 +17,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dpsd.hamo.R;
+import com.dpsd.hamo.controllers.RequestAdder;
+import com.dpsd.hamo.dbmodel.DatabaseHandle;
+import com.dpsd.hamo.dbmodel.DonationRequestCollection;
+import com.dpsd.hamo.dbmodel.dbhelpers.FileStorage;
+import com.dpsd.hamo.dbmodel.dbhelpers.LocalStorage;
 
 import java.io.IOException;
 
-public class CreateRequestActivity extends AppCompatActivity
+public class CreateRequestActivity extends AppCompatActivity implements RequestAdder
 {
     TextView uploadImageTextView;
     TextView takePhoto;
@@ -78,16 +84,14 @@ public class CreateRequestActivity extends AppCompatActivity
     }
 
     public void submitDonationRequest(){
+
         String summary = summaryEditText.getText().toString();
         String description = descriptionEditText.getText().toString();
-        if (uploadedPhotoToSave != null)
-        {
-            Log.i(summary, description + "image upload");
-        }
-        else
-        {
-            Log.i(summary, description + "no image");
-        }
+
+        DonationRequestCollection dcol = new DonationRequestCollection(DatabaseHandle.db);
+        dcol.addDonationRequest(summary,description,
+                LocalStorage.getValue("rep",this),this);
+
 
     }
 
@@ -126,10 +130,21 @@ public class CreateRequestActivity extends AppCompatActivity
         }
         else if (requestCode == REQUEST_CODE_CAMERA && resultCode == RESULT_OK)
         {
+            imageUri = data.getData();
             Bitmap capturedImage = (Bitmap) data.getExtras().get("data");
             uploadedPhotoToSave = capturedImage;
             uploadedImageRep.setImageBitmap(capturedImage);
         }
 
+
+
+    }
+
+    @Override
+    public void saveImage(String requestId)
+    {
+        if(imageUri!=null)
+            FileStorage.addRequestImage(LocalStorage.getValue("userId",this),
+                requestId,imageUri,this);
     }
 }

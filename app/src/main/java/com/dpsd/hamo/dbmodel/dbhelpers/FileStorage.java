@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -62,41 +63,47 @@ public class FileStorage {
     }
 
     public static void addRequestImage(String repId,String requestId, Uri imageUri,
-                                       Context context,ProgressBar progressBar){
+                                       Context context/*,ProgressBar progressBar*/){
         try
         {
-            String pic_id = requestId+"_"+repId+"_"+System.currentTimeMillis();
-            //get and append file extension
-            pic_id+="."+getFileExtension(imageUri,context);
-            StorageReference donorImageRef = storageRef.child(communityRepresentativeFolder+"/"+pic_id);
+            String  dburl = getNextImageUri("rep",repId,requestId,imageUri,context);
+            StorageReference donorImageRef = storageRef.child(dburl);
             //move file to server
             donorImageRef.putFile(imageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                     if(task.isSuccessful())
                     {
-                        //
+                        Toast.makeText(context,"Image saved.",Toast.LENGTH_SHORT).show();
                     }
                     else
                     {
                         //respond to error
+                        Toast.makeText(context,"Could not save image.",Toast.LENGTH_SHORT).show();
                     }
                 }
-            })
-                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
-                            int progress =(int) (100 * snapshot.getBytesTransferred()/snapshot.getTotalByteCount());
-                            //display this on progress bar
-                            progressBar.setProgress(progress);
-                        }
-                    });
+            });
 
         }
         catch (Exception ex)
         {
             Log.d(TAG, "addDonorImage: "+ex.getMessage());
         }
+    }
+
+    public static String getNextImageUri(String role,String userId,String otherInfo,Uri imageUri,Context context)
+    {
+        String pic_id="";
+        String uri ="";
+        if(role.equals("rep"))
+        {
+            pic_id = otherInfo+"_"+userId+"_"+System.currentTimeMillis();
+            uri = communityRepresentativeFolder+"/"+pic_id;
+        }
+
+        pic_id+="."+getFileExtension(imageUri,context);
+
+        return pic_id;
     }
 
 

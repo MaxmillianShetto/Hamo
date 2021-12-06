@@ -2,6 +2,7 @@ package com.dpsd.hamo.dbmodel;
 
 import android.content.Context;
 import android.location.Address;
+import android.net.Uri;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
@@ -9,7 +10,9 @@ import android.widget.Spinner;
 import androidx.annotation.NonNull;
 
 import com.dpsd.hamo.controllers.ReportDisplayer;
+import com.dpsd.hamo.controllers.RequestAdder;
 import com.dpsd.hamo.dbmodel.dbhelpers.Donor;
+import com.dpsd.hamo.dbmodel.dbhelpers.FileStorage;
 import com.dpsd.hamo.dbmodel.dbhelpers.GivingInfo;
 import com.dpsd.hamo.dbmodel.dbhelpers.RequestInfo;
 import com.dpsd.hamo.dbmodel.dbhelpers.RequestSummary;
@@ -37,6 +40,7 @@ public class DonationRequestCollection {
     public static final String stateField="state";
     public static final String representativeIdField="repId";
     public static final String donorsField="donors";
+    public static final String imageUriField ="imageuri";
 
     String TAG = "DonationRequestCollection";
     FirebaseFirestore db;
@@ -46,7 +50,8 @@ public class DonationRequestCollection {
         db = database;
     }
 
-    public void addDonationRequest(String summary,String details,String repId)
+    public void addDonationRequest(String summary, String details, String repId,
+                                   RequestAdder requestAdder)
     {
         if(summary.trim().equals("")||details.trim().equals("")|| repId.trim().equals(""))
         {
@@ -62,13 +67,15 @@ public class DonationRequestCollection {
             record.put(stateField,"active");
             record.put(representativeIdField,repId);
             record.put(donorsField,new ArrayList<Donor>());
+            record.put(imageUriField,"");
 
             db.collection(name).add(record).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
                 @Override
                 public void onComplete(@NonNull Task<DocumentReference> task) {
                     if(task.isSuccessful())
                     {
-
+                       DocumentReference doc = task.getResult();
+                         requestAdder.saveImage(doc.getId());
                     }
                     else
                     {

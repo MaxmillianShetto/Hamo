@@ -71,6 +71,14 @@ public class UsersCollection
                     if(task.isSuccessful())
                     {
                         signUp.proceedToHomePage(role);
+                        if (!email.equals("") && !fullname.equals(""))
+                        {
+                            signUp.sendSignUpEmail(email, fullname);
+                        }
+                        else if (!phoneNumber.equals("") && !fullname.equals(""))
+                        {
+                            signUp.sendSignUpSms(phoneNumber,fullname);
+                        }
                     }
                     else
                     {
@@ -129,7 +137,7 @@ public class UsersCollection
                                     boolean isRole = document.get(roleField).toString().trim().equals(role);
                                     if(emailIsValid && passwordIsValid && isRole)
                                     {
-                                        login.proceedToHomePage(role, emailOrPhoneNumber);
+                                        login.proceedToHomePage(role, document.getId());
                                     }
                                     else
                                     {
