@@ -19,6 +19,8 @@ import com.dpsd.hamo.R;
 import com.dpsd.hamo.controllers.RequestReader;
 import com.dpsd.hamo.controllers.ShowCoordinates;
 import com.dpsd.hamo.databinding.FragmentGiverHomeBinding;
+import com.dpsd.hamo.dbmodel.DatabaseHandle;
+import com.dpsd.hamo.dbmodel.DonationRequestCollection;
 import com.dpsd.hamo.dbmodel.dbhelpers.RequestInfo;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -43,14 +45,19 @@ public class GiverHomeFragment extends Fragment implements RequestReader
     AppCompatActivity activity;
     Context context;
 
+    ArrayList<RequestInfo> requests;
+
     ArrayList<LatLng> locations;
     ArrayList<String> title;
 
     ShowCoordinates showCoordinates;
 
-    LatLng sydney = new LatLng(-34, 151);
-    LatLng bee = new LatLng(-31.08, 150.9);
-    LatLng dog = new LatLng(-30, 151.34);
+//    LatLng one = new LatLng(Double.parseDouble(requests.get(0).getLatitude()),
+//            Double.parseDouble(requests.get(0).getLongitude()));
+
+//    LatLng sydney = new LatLng(-34, 151);
+//    LatLng bee = new LatLng(-31.08, 150.9);
+//    LatLng dog = new LatLng(-30, 151.34);
 
 
     public GiverHomeFragment()
@@ -79,18 +86,24 @@ public class GiverHomeFragment extends Fragment implements RequestReader
         binding = FragmentGiverHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
+        DonationRequestCollection donReq = new DonationRequestCollection(DatabaseHandle.db);
+
+       // requests = new ArrayList<RequestInfo>();
+
         supportMapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.giver_map);
         supportMapFragment.getMapAsync(new OnMapReadyCallback()
         {
             @Override
             public void onMapReady(@NonNull GoogleMap googleMap)
             {
-                for (int i = 0; i < locations.size(); i++)
+                for (int i = 0; i < requests.size(); i++)
                 {
-                    MarkerOptions options = new MarkerOptions().position(locations.get(i)).title(String.valueOf(title.get(i)));
+                    LatLng one = new LatLng(Double.parseDouble(requests.get(i).getLatitude()),
+                            Double.parseDouble(requests.get(i).getLongitude()));
+                    MarkerOptions options = new MarkerOptions().position(one).title(String.valueOf(requests.get(i).getSummary()));
                     googleMap.addMarker(options);
 
-                    googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(locations.get(i), 10));
+                    googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(one, 10));
 
                 }
 
@@ -120,20 +133,20 @@ public class GiverHomeFragment extends Fragment implements RequestReader
         locations = new ArrayList<LatLng>();
         title = new ArrayList<String>();
 
-        locations.add(sydney);
-        locations.add(bee);
-        locations.add(dog);
+//        locations.add(sydney);
+//        locations.add(bee);
+//        locations.add(dog);
 
-        title.add("Sydney");
-        title.add("Bee");
-        title.add("Dog");
+//        title.add("Sydney");
+//        title.add("Bee");
+//        title.add("Dog");
 
-        showCoordinates = new ShowCoordinates(getActivity(), providerClient, supportMapFragment);
+//        showCoordinates = new ShowCoordinates(getActivity(), providerClient, supportMapFragment);
 
         if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
         {
             //getCurrentLocation();
-            showCoordinates.getCurrentLocation(getActivity(), locations, title);
+//            showCoordinates.getCurrentLocation(getActivity(), locations, title);
         } else
         {
             ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 100);
@@ -146,7 +159,6 @@ public class GiverHomeFragment extends Fragment implements RequestReader
     @Override
     public void processRequest(ArrayList<RequestInfo> requestInfos)
     {
-//        for (int i = 0; i < )
-//        double longitutde = requestInfos.get(0).getLongitude();
+        requests = requestInfos;
     }
 }
