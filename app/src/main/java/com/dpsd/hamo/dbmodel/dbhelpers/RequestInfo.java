@@ -42,4 +42,17 @@ public class RequestInfo {
     {
         return  requestDate;
     }
+
+    @Override
+    public String toString()
+    {
+        return "RequestInfo{" +
+                "requestId='" + requestId + '\'' +
+                ", latitude='" + latitude + '\'' +
+                ", longitude='" + longitude + '\'' +
+                ", summary='" + summary + '\'' +
+                ", details='" + details + '\'' +
+                ", requestDate='" + requestDate + '\'' +
+                '}';
+    }
 }

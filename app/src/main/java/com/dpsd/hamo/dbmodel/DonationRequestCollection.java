@@ -16,6 +16,7 @@ import com.dpsd.hamo.controllers.RequestReader;
 import com.dpsd.hamo.dbmodel.dbhelpers.Donor;
 import com.dpsd.hamo.dbmodel.dbhelpers.FileStorage;
 import com.dpsd.hamo.dbmodel.dbhelpers.GivingInfo;
+import com.dpsd.hamo.dbmodel.dbhelpers.GpsLocation;
 import com.dpsd.hamo.dbmodel.dbhelpers.LocalStorage;
 import com.dpsd.hamo.dbmodel.dbhelpers.RequestInfo;
 import com.dpsd.hamo.dbmodel.dbhelpers.RequestSummary;
@@ -44,6 +45,8 @@ public class DonationRequestCollection {
     public static final String representativeIdField="repId";
     public static final String donorsField="donors";
     public static final String imageUriField ="imageuri";
+    public static final String latitudeField="latitude";
+    public static final String longitudeField = "longitude";
 
     String TAG = "DonationRequestCollection";
     FirebaseFirestore db;
@@ -53,14 +56,11 @@ public class DonationRequestCollection {
         db = database;
     }
 
-    public void addDonationRequest(String summary, String details, String repId,
+    public void addDonationRequest(String summary, String details, String repId,String lat,String lon,
                                    RequestAdder requestAdder)
     {
         if(summary.trim().equals("")||details.trim().equals("")|| repId.trim().equals(""))
         {
-            //show message of invalid activity
-            Log.d(TAG, "addDonationRequest: "+"didn't pass validation: summary:"+summary+
-                    " details: "+details+" repId:"+repId);
             return;
         }
         try
@@ -73,6 +73,8 @@ public class DonationRequestCollection {
             record.put(representativeIdField,repId);
             record.put(donorsField,new ArrayList<Donor>());
             record.put(imageUriField,"");
+            record.put(latitudeField,lat);
+            record.put(longitudeField,lon);
 
             db.collection(name).add(record).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
                 @Override
@@ -80,12 +82,11 @@ public class DonationRequestCollection {
                     if(task.isSuccessful())
                     {
                        DocumentReference doc = task.getResult();
-                       Log.i("Donation req", "saved");
                        requestAdder.saveImage(doc.getId());
                     }
                     else
                     {
-                        Log.e("Donation req", "not saved");
+
                     }
                 }
             });
@@ -179,7 +180,7 @@ public class DonationRequestCollection {
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
                     if(task.isSuccessful())
                     {
-                        ArrayList<RequestInfo> requestInfos = new ArrayList<>();
+                         ArrayList<RequestInfo> requestInfos = new ArrayList<>();
                         String repId = "",lat="", lon="";
                         for(QueryDocumentSnapshot document: task.getResult())
                         {
@@ -189,16 +190,39 @@ public class DonationRequestCollection {
                                 repId = document.get(representativeIdField).toString();
                                 try
                                 {
-                                    //get representative's current location
-                                    Task<DocumentSnapshot> usertask = db.collection(UsersCollection.name)
-                                            .document(repId).get();
-                                    DocumentSnapshot userdoc = Tasks.await(usertask);
-                                    ArrayList<Address> userLocation = (ArrayList<Address>) userdoc.get(UsersCollection.gpsLocationsField);
-                                    if(userLocation.size()>0)
+                                    db.collection(UsersCollection.name)
+                                            .document(repId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
                                     {
-                                        lat = Double.toString(userLocation.get(userLocation.size()-1).getLatitude());
-                                        lon = Double.toString(userLocation.get(userLocation.size()-1).getLongitude());
-                                    }
+                                        @Override
+                                        public void onComplete(@NonNull Task<DocumentSnapshot> task)
+                                        {
+                                            DocumentSnapshot doc = task.getResult();
+                                            if(task.isSuccessful())
+                                            {
+                                               ArrayList<GpsLocation> userLocation = (ArrayList<GpsLocation>) doc.get(UsersCollection.gpsLocationsField);
+                                                if(userLocation.size()>0)
+                                                {
+                                                    //set all info
+                                                    requestInfos.add(new RequestInfo(doc.getId().toString(),
+                                                            userLocation.get(userLocation.size()-1).latitude,
+                                                            userLocation.get(userLocation.size()-1).longitude,
+                                                            document.get(summaryField).toString(),
+                                                            document.get(detailsField).toString(),
+                                                            document.get(requestDateField).toString()));
+                                                    Log.d(TAG, "onComplete: lat " +lat
+                                                            + "long: " + lon);
+
+                                                    requestReader.updateList(new RequestInfo(doc.getId().toString(),
+                                                            userLocation.get(userLocation.size()-1).latitude,
+                                                            userLocation.get(userLocation.size()-1).longitude,
+                                                            document.get(summaryField).toString(),
+                                                            document.get(detailsField).toString(),
+                                                            document.get(requestDateField).toString()));
+                                                }
+                                            }
+                                        }
+                                    });
+
 
                                 }
                                 catch (Exception ex)
@@ -206,24 +230,18 @@ public class DonationRequestCollection {
                                     Log.d(TAG, "onComplete: "+ex.getMessage());
                                 }
 
-                                //set all info
-                                requestInfos.add(new RequestInfo(document.getId().toString(),
-                                        lat,
-                                        lon,
-                                        document.get(summaryField).toString(),
-                                        document.get(detailsField).toString(),
-                                        document.get(requestDateField).toString()));
                             }
 
-                            requestReader.processRequest(requestInfos);
                         }
 
                         //call success method here
+                        requestReader.processRequest(requestInfos);
 
                     }
                     else
                     {
                         //put failure code here
+                        Log.d(TAG, "onComplete: error");
                     }
                 }
             });

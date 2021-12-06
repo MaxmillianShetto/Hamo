@@ -1,10 +1,15 @@
 package com.dpsd.hamo.view.ui.home;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.appsearch.StorageInfo;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationProvider;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -17,13 +22,24 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.dpsd.hamo.R;
+import com.dpsd.hamo.controller.permissions.PermissionFactory;
+import com.dpsd.hamo.controller.permissions.PermissionManager;
+import com.dpsd.hamo.controller.permissions.PermissionType;
 import com.dpsd.hamo.controllers.RequestAdder;
 import com.dpsd.hamo.dbmodel.DatabaseHandle;
 import com.dpsd.hamo.dbmodel.DonationRequestCollection;
 import com.dpsd.hamo.dbmodel.dbhelpers.FileStorage;
+import com.dpsd.hamo.dbmodel.dbhelpers.GpsLocation;
 import com.dpsd.hamo.dbmodel.dbhelpers.LocalStorage;
+import com.dpsd.hamo.view.login.SignUpFragment;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
 
 public class CreateRequestActivity extends AppCompatActivity implements RequestAdder
 {
@@ -34,6 +50,8 @@ public class CreateRequestActivity extends AppCompatActivity implements RequestA
     ImageView uploadedImageRep;
     Button submitRequest;
     Bitmap uploadedPhotoToSave;
+
+    private LocationProvider locationProvider;
 
     int REQUEST_CODE_UPLOAD = 1;
     int REQUEST_CODE_CAMERA = 100;
@@ -89,9 +107,41 @@ public class CreateRequestActivity extends AppCompatActivity implements RequestA
         String summary = summaryEditText.getText().toString();
         String description = descriptionEditText.getText().toString();
 
+        LocationProvider provider = locationProvider;
+        GpsLocation currentLocation = new GpsLocation();
+
+        FusedLocationProviderClient fusedLocationClient = LocationServices
+                .getFusedLocationProviderClient(getApplicationContext());
+
+        PermissionManager permissionManager = PermissionFactory
+                .getPermission(PermissionType.ACCESS_FINE_LOCATION);
         DonationRequestCollection dcol = new DonationRequestCollection(DatabaseHandle.db);
-        dcol.addDonationRequest(summary,description,
-                LocalStorage.getValue("userId",this),this);
+
+        if (permissionManager.checkPermission(getApplicationContext(), this))
+        {
+            fusedLocationClient.getLastLocation()
+                    .addOnSuccessListener(new OnSuccessListener<Location>()
+                    {
+                        @Override
+                        public void onSuccess(Location location)
+                        {
+
+                            dcol.addDonationRequest(summary, description,
+                                    LocalStorage.getValue("userId", CreateRequestActivity.this), Double.toString(location.getLatitude()),
+                                    Double.toString(location.getLongitude()), CreateRequestActivity.this);
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener()
+                    {
+                        @Override
+                        public void onFailure(@NonNull Exception e)
+                        {
+                            dcol.addDonationRequest(summary, description,
+                                    LocalStorage.getValue("userId", CreateRequestActivity.this), "-1.9422403",
+                                    "30.1201112", CreateRequestActivity.this);
+                        }
+                    });
+        }
 
 
     }

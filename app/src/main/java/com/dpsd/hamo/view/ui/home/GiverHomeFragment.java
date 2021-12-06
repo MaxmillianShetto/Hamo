@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -86,45 +87,7 @@ public class GiverHomeFragment extends Fragment implements RequestReader
         binding = FragmentGiverHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        DonationRequestCollection donReq = new DonationRequestCollection(DatabaseHandle.db);
-
        // requests = new ArrayList<RequestInfo>();
-
-        supportMapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.giver_map);
-        supportMapFragment.getMapAsync(new OnMapReadyCallback()
-        {
-            @Override
-            public void onMapReady(@NonNull GoogleMap googleMap)
-            {
-                for (int i = 0; i < requests.size(); i++)
-                {
-                    LatLng one = new LatLng(Double.parseDouble(requests.get(i).getLatitude()),
-                            Double.parseDouble(requests.get(i).getLongitude()));
-                    MarkerOptions options = new MarkerOptions().position(one).title(String.valueOf(requests.get(i).getSummary()));
-                    googleMap.addMarker(options);
-
-                    googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(one, 10));
-
-                }
-
-                googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener()
-                {
-                    @Override
-                    public boolean onMarkerClick(@NonNull Marker marker)
-                    {
-
-                        String markerTitle = marker.getTitle();
-
-                        Intent markerIntent = new Intent(getActivity(), DonationRequestDetailsActivity.class);
-                        markerIntent.putExtra("title", markerTitle);
-                        startActivity(markerIntent);
-                        Toast.makeText(getContext(), "Clicked marker", Toast.LENGTH_SHORT).show();
-
-                        return false;
-                    }
-                });
-            }
-        });
 
         providerClient = LocationServices.getFusedLocationProviderClient(getContext());
         activity = (AppCompatActivity) getActivity();
@@ -133,6 +96,48 @@ public class GiverHomeFragment extends Fragment implements RequestReader
         locations = new ArrayList<LatLng>();
         title = new ArrayList<String>();
 
+        supportMapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.giver_map);
+        DonationRequestCollection donReq = new DonationRequestCollection(DatabaseHandle.db);
+        donReq.getRequests(this);
+        supportMapFragment.getMapAsync(new OnMapReadyCallback()
+        {
+            @Override
+            public void onMapReady(@NonNull GoogleMap googleMap)
+            {
+                if(requests == null)
+                    Toast.makeText(getContext(), "No data", Toast.LENGTH_SHORT).show();
+                else
+                {
+                    for (int i = 0; i < requests.size(); i++)
+                    {
+                        LatLng one = new LatLng(Double.parseDouble(requests.get(i).getLatitude()),
+                                Double.parseDouble(requests.get(i).getLongitude()));
+                        MarkerOptions options = new MarkerOptions().position(one).title(String.valueOf(requests.get(i).getSummary()));
+                        googleMap.addMarker(options);
+
+                        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(one, 10));
+
+                    }
+
+                    googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener()
+                    {
+                        @Override
+                        public boolean onMarkerClick(@NonNull Marker marker)
+                        {
+
+                            String markerTitle = marker.getTitle();
+
+                            Intent markerIntent = new Intent(getActivity(), DonationRequestDetailsActivity.class);
+                            markerIntent.putExtra("title", markerTitle);
+                            startActivity(markerIntent);
+                            Toast.makeText(getContext(), "Clicked marker", Toast.LENGTH_SHORT).show();
+
+                            return false;
+                        }
+                    });
+                }
+            }
+        });
 //        locations.add(sydney);
 //        locations.add(bee);
 //        locations.add(dog);
@@ -156,9 +161,61 @@ public class GiverHomeFragment extends Fragment implements RequestReader
         return root;
     }
 
+    private void loadMap()
+    {
+        supportMapFragment.getMapAsync(new OnMapReadyCallback()
+        {
+            @Override
+            public void onMapReady(@NonNull GoogleMap googleMap)
+            {
+                if(requests == null)
+                    Toast.makeText(getContext(), "No data", Toast.LENGTH_SHORT).show();
+                else
+                {
+                    for (int i = 0; i < requests.size(); i++)
+                    {
+                        LatLng one = new LatLng(Double.parseDouble(requests.get(i).getLatitude()),
+                                Double.parseDouble(requests.get(i).getLongitude()));
+                        MarkerOptions options = new MarkerOptions().position(one).title(String.valueOf(requests.get(i).getSummary()));
+                        googleMap.addMarker(options);
+
+                        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(one, 10));
+
+                    }
+
+                    googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener()
+                    {
+                        @Override
+                        public boolean onMarkerClick(@NonNull Marker marker)
+                        {
+
+                            String markerTitle = marker.getTitle();
+
+                            Intent markerIntent = new Intent(getActivity(), DonationRequestDetailsActivity.class);
+                            markerIntent.putExtra("title", markerTitle);
+                            startActivity(markerIntent);
+                            Toast.makeText(getContext(), "Clicked marker", Toast.LENGTH_SHORT).show();
+
+                            return false;
+                        }
+                    });
+                }
+            }
+        });
+    }
+
     @Override
     public void processRequest(ArrayList<RequestInfo> requestInfos)
     {
         requests = requestInfos;
+
+//        loadMap();
+    }
+
+    @Override
+    public void updateList(RequestInfo requestInfo)
+    {
+        Log.i("data", requestInfo.toString());
+        requests.add(requestInfo);
     }
 }
