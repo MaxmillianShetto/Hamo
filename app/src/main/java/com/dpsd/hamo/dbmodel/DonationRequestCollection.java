@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 
 import com.dpsd.hamo.controllers.ReportDisplayer;
 import com.dpsd.hamo.controllers.RequestAdder;
+import com.dpsd.hamo.controllers.RequestReader;
 import com.dpsd.hamo.dbmodel.dbhelpers.Donor;
 import com.dpsd.hamo.dbmodel.dbhelpers.FileStorage;
 import com.dpsd.hamo.dbmodel.dbhelpers.GivingInfo;
@@ -168,7 +169,7 @@ public class DonationRequestCollection {
         }
     }
 
-    public void getRequests()
+    public void getRequests(RequestReader requestReader)
     {
         try
         {
@@ -213,6 +214,8 @@ public class DonationRequestCollection {
                                         document.get(detailsField).toString(),
                                         document.get(requestDateField).toString()));
                             }
+
+                            requestReader.processRequest(requestInfos);
                         }
 
                         //call success method here

@@ -16,8 +16,10 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import com.dpsd.hamo.R;
+import com.dpsd.hamo.controllers.RequestReader;
 import com.dpsd.hamo.controllers.ShowCoordinates;
 import com.dpsd.hamo.databinding.FragmentGiverHomeBinding;
+import com.dpsd.hamo.dbmodel.dbhelpers.RequestInfo;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -30,7 +32,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 
-public class GiverHomeFragment extends Fragment
+public class GiverHomeFragment extends Fragment implements RequestReader
 {
     private @NonNull
     FragmentGiverHomeBinding binding;
@@ -139,5 +141,12 @@ public class GiverHomeFragment extends Fragment
         }
 
         return root;
+    }
+
+    @Override
+    public void processRequest(ArrayList<RequestInfo> requestInfos)
+    {
+//        for (int i = 0; i < )
+//        double longitutde = requestInfos.get(0).getLongitude();
     }
 }
