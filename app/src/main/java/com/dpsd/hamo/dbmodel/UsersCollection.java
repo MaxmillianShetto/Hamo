@@ -94,16 +94,19 @@ public class UsersCollection
     }
 
     public void isUser(String emailOrPhoneNumber, String password, String role, Login login){
+
         if(emailOrPhoneNumber.trim().equals("") || password.trim().equals(""))
         {
             login.fieldsEmptyErrorMessage();
             return;
         }
-        Log.i("Login", "first part");
+       // Log.i("Login", "first part");
 
         //use value holder to get user's full name
         try
         {
+            Log.e(TAG, "called");
+
             String regexEmail = "^(.+)@(.+)$";
             String regexPhoneNumber = "^\\d{10}$";
             Pattern pattern = Pattern.compile(regexEmail);
@@ -137,6 +140,10 @@ public class UsersCollection
                                     boolean isRole = document.get(roleField).toString().trim().equals(role);
                                     if(emailIsValid && passwordIsValid && isRole)
                                     {
+                                        Log.e(TAG, "onComplete: got here");
+//                                        ArrayList<GpsLocation> locationData= (ArrayList<GpsLocation>) document.get(gpsLocationsField);
+                                        Log.e(TAG, "onComplete: passed");
+//                                        locationData.get(locationData.size() - 1).latitude,locationData.get(locationData.size() - 1).longitude
                                         login.proceedToHomePage(role, document.getId());
                                     }
                                     else

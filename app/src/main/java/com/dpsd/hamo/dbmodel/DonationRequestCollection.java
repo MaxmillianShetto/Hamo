@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.dpsd.hamo.controllers.DonationGetter;
 import com.dpsd.hamo.controllers.Donator;
 import com.dpsd.hamo.controllers.ReportDisplayer;
 import com.dpsd.hamo.controllers.RequestAdder;
@@ -126,7 +127,7 @@ public class DonationRequestCollection {
     }
 
     public void addDonation(String donationRequestId, String donorId, String donorName,
-                            String donationDate, String itemsDescription, Donator donator)
+                            String donationDate, String itemsDescription,String lat,String lon, Donator donator)
     {
         try
         {
@@ -136,6 +137,8 @@ public class DonationRequestCollection {
             record.put(donationDateField,donationDate);
             record.put(donationDescField,itemsDescription);
             record.put(donationImgUriField,"");
+            record.put("latitude",lat);
+            record.put("longitude",lon);
 
             db.collection("donations").add(record).addOnCompleteListener(
                     new OnCompleteListener<DocumentReference>()
@@ -297,7 +300,7 @@ public class DonationRequestCollection {
         }
     }
 
-    public void getDonations(String requestId,ReportDisplayer reportDisplayer)
+    public void getDonations(String requestId, DonationGetter donationGetter)
     {
         try
         {
@@ -309,7 +312,6 @@ public class DonationRequestCollection {
                         {
                             if(task.isSuccessful())
                             {
-                                DocumentSnapshot curDoc=null;
                                 ArrayList<String> donorList = new ArrayList<>();
                                 for(DocumentSnapshot doc : task.getResult())
                                 {
@@ -317,7 +319,32 @@ public class DonationRequestCollection {
                                 }
                                 if(donorList.size()>0)
                                 {
+                                    db.collection(UsersCollection.name).whereIn("id",donorList)
+                                            .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
+                                    {
+                                        @Override
+                                        public void onComplete(@NonNull Task<QuerySnapshot> task)
+                                        {
+                                            if(task.isSuccessful())
+                                            {
+                                                ArrayList<GpsLocation> locations = new ArrayList<>();
+                                                GpsLocation loc;
+                                                for (DocumentSnapshot udoc : task.getResult())
+                                                {
+                                                    loc = (GpsLocation) udoc.get(UsersCollection.gpsLocationsField);
+                                                    locations.add(loc);
+                                                }
 
+                                                //respond to success
+                                                donationGetter.processSuccess(locations);
+                                            }
+                                            else
+                                            {
+                                                //failure
+                                                donationGetter.processFailure();
+                                            }
+                                        }
+                                    });
                                 }
                             }
                         }

@@ -7,6 +7,8 @@ public class Donor {
     private String donorName;
     private String donationDate;
     private String itemsDescription;
+    private String latitude;
+    private String longitude;
 
     public Donor(String _donorId) {
         donorId = _donorId;
@@ -21,6 +23,12 @@ public class Donor {
     public Donor(String _donorId, String _donorName, String _donationDate) {
         this(_donorId, _donorName);
         donationDate = _donationDate;
+    }
+
+    public Donor(String _donorId, String _donorName, String _donationDate,String lat,String lon) {
+        this(_donorId,_donorName,_donationDate);
+        latitude = lat;
+        longitude = lon;
     }
 
     public Donor(String _donorId, String _donorName, String _donationDate,String description) {
@@ -54,6 +62,12 @@ public class Donor {
     {
         return itemsDescription;
     }
+    public String getLatitude(){
+        return  latitude;
+    }
+    public String getLongitude(){
+        return  longitude;
+    }
 
     @Override
     public String toString()
@@ -63,9 +77,9 @@ public class Donor {
                 ", donorName='" + donorName + '\'' +
                 ", donationDate='" + donationDate + '\'' +
                 ", itemsDescription='" + itemsDescription + '\'' +
+                ", latitude='" + latitude + '\'' +
+                ", longitude='" + longitude + '\'' +
                 '}';
     }
-
-
 }
 

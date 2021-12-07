@@ -20,7 +20,9 @@ import com.dpsd.hamo.R;
 import com.dpsd.hamo.controllers.ShowCoordinates;
 import com.dpsd.hamo.databinding.FragmentCommunityRepHomeBinding;
 import com.dpsd.hamo.databinding.FragmentGiverHomeBinding;
+import com.dpsd.hamo.dbmodel.dbhelpers.Donor;
 import com.dpsd.hamo.dbmodel.dbhelpers.LocalStorage;
+import com.dpsd.hamo.dbmodel.dbhelpers.RequestInfo;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -49,6 +51,9 @@ public class CommunityRepHomeFragment extends Fragment
     AppCompatActivity activity;
     Context context;
     ExtendedFloatingActionButton fab;
+    GoogleMap gMap;
+
+    ArrayList<Donor> donors;
 
     ArrayList<LatLng> locations;
     ArrayList<String> title;
@@ -107,6 +112,7 @@ public class CommunityRepHomeFragment extends Fragment
             @Override
             public void onMapReady(@NonNull GoogleMap googleMap)
             {
+                gMap = googleMap;
                 for (int i = 0; i < locations.size(); i++)
                 {
                     MarkerOptions options = new MarkerOptions().position(locations.get(i)).title(String.valueOf(title.get(i)));
@@ -176,4 +182,48 @@ public class CommunityRepHomeFragment extends Fragment
             }
         }
     }
+
+//    private void loadMap()
+//    {
+//        for (int i = 0; i < donors.size(); i++)
+//        {
+//            LatLng one = new LatLng(Double.parseDouble(donors.get(i).getLatitude()),
+//                    Double.parseDouble(donors.get(i).getLongitude()));
+//            MarkerOptions options = new MarkerOptions().position(one).title(String.valueOf(donors.get(i).getSummary()));
+//            gMap.addMarker(options);
+//
+//            gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(one, 10));
+//
+//        }
+//
+//        gMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener()
+//        {
+//            @Override
+//            public boolean onMarkerClick(@NonNull Marker marker)
+//            {
+//
+//                String markerTitle = marker.getTitle();
+//                RequestInfo requestInfo = getRequestInfo(markerTitle);
+//                Intent markerIntent = new Intent(getActivity(), DonationRequestDetailsActivity.class);
+//                markerIntent.putExtra("title", markerTitle);
+//                markerIntent.putExtra("requestInfo", requestInfo);
+//                startActivity(markerIntent);
+//                Toast.makeText(getContext(), "Clicked marker", Toast.LENGTH_SHORT).show();
+//
+//                return false;
+//            }
+//        });
+//    }
+//
+//    public RequestInfo getRequestInfo(String summary)
+//    {
+//        for(int i  = 0; i < donors.size(); i++)
+//        {
+//            if (donors.get(i).getSummary().equals(summary))
+//            {
+//                return donors.get(i);
+//            }
+//        }
+//        return null;
+//    }
 }

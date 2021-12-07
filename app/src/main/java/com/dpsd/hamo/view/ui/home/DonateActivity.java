@@ -89,10 +89,12 @@ public class DonateActivity extends AppCompatActivity implements Donator
 
                 DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
                 LocalDateTime now = LocalDateTime.now();
+                String lat = LocalStorage.getValue("latitude", getApplicationContext());
+                String lng = LocalStorage.getValue("longitude", getApplicationContext());
 
                 DonationRequestCollection dcol = new DonationRequestCollection(DatabaseHandle.db);
                 dcol.addDonation(requestId,LocalStorage.getValue("userId",DonateActivity.this),
-                        "",now.toString(),description.getText().toString(),DonateActivity.this);
+                        "",now.toString(),description.getText().toString(),lat, lng,DonateActivity.this);
 
             }
         });

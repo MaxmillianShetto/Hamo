@@ -194,9 +194,6 @@ public class GiverHomeFragment extends Fragment implements RequestReader
                             return false;
                         }
                     });
-
-
-
     }
 
     @Override

@@ -173,7 +173,7 @@ public class LoginFragment extends Fragment implements Login, AdapterView.OnItem
         intent.putExtra("role", role);
         startActivity(intent);
     }
-
+//    , String lat, String lng
     @Override
     public void proceedToHomePage(String role, String userId)
     {
@@ -181,6 +181,8 @@ public class LoginFragment extends Fragment implements Login, AdapterView.OnItem
         Intent intent = new Intent(getActivity(), (Class<?>) UserActivityFactory.loadActivity(role));
         LocalStorage.AddKeyValue("userId", userId, getContext());
         LocalStorage.AddKeyValue("role", role, getContext());
+//        LocalStorage.AddKeyValue("latitude", lat, getContext());
+//        LocalStorage.AddKeyValue("longitude", lng, getContext());
         startActivity(intent);
 
     }
