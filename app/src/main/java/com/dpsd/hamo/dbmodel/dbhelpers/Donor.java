@@ -1,6 +1,8 @@
 package com.dpsd.hamo.dbmodel.dbhelpers;
 
 public class Donor {
+
+
     private String donorId;
     private String donorName;
     private String donationDate;
@@ -51,6 +53,17 @@ public class Donor {
     public String getItemsDescription()
     {
         return itemsDescription;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "Donor{" +
+                "donorId='" + donorId + '\'' +
+                ", donorName='" + donorName + '\'' +
+                ", donationDate='" + donationDate + '\'' +
+                ", itemsDescription='" + itemsDescription + '\'' +
+                '}';
     }
 
 

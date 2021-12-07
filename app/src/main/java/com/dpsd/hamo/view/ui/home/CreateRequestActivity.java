@@ -31,6 +31,8 @@ import com.dpsd.hamo.dbmodel.DonationRequestCollection;
 import com.dpsd.hamo.dbmodel.dbhelpers.FileStorage;
 import com.dpsd.hamo.dbmodel.dbhelpers.GpsLocation;
 import com.dpsd.hamo.dbmodel.dbhelpers.LocalStorage;
+import com.dpsd.hamo.view.CommunityRepActivity;
+import com.dpsd.hamo.view.GiverActivity;
 import com.dpsd.hamo.view.login.SignUpFragment;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -143,7 +145,9 @@ public class CreateRequestActivity extends AppCompatActivity implements RequestA
                     });
         }
 
-
+        Intent intent = new Intent(this, CommunityRepActivity.class);
+        Toast.makeText(getApplicationContext(), "Your request has been saved", Toast.LENGTH_LONG).show();
+        startActivity(intent);
     }
 
     private void uploadImageFromPhone()

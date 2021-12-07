@@ -203,10 +203,7 @@ public class GiverHomeFragment extends Fragment implements RequestReader
     public void processRequest(ArrayList<RequestInfo> requestInfos)
     {
         requests = requestInfos;
-        if (requests != null)
-        {
-            Toast.makeText(getContext(), requests.get(0).toString(),Toast.LENGTH_LONG).show();
-        }
+        Toast.makeText(getContext(), Integer.toString(requests.size()), Toast.LENGTH_LONG).show();
         loadMap();
     }
 

@@ -1,5 +1,6 @@
 package com.dpsd.hamo.view.ui.home;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -7,6 +8,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
@@ -23,10 +25,17 @@ import com.dpsd.hamo.R;
 import com.dpsd.hamo.controller.permissions.PermissionFactory;
 import com.dpsd.hamo.controller.permissions.PermissionManager;
 import com.dpsd.hamo.controller.permissions.PermissionType;
+import com.dpsd.hamo.controllers.Donator;
+import com.dpsd.hamo.dbmodel.DatabaseHandle;
+import com.dpsd.hamo.dbmodel.DonationRequestCollection;
+import com.dpsd.hamo.dbmodel.dbhelpers.LocalStorage;
+import com.dpsd.hamo.view.GiverActivity;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
-public class DonateActivity extends AppCompatActivity
+public class DonateActivity extends AppCompatActivity implements Donator
 {
     ImageView uploadedImage;
 
@@ -41,12 +50,15 @@ public class DonateActivity extends AppCompatActivity
     int REQUEST_CODE_CAMERA = 100;
 
     Spinner spinner;
+    String requestId="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_donate);
+
+        requestId = getIntent().getExtras().getString("requestId");
 
         uploadedImage = findViewById(R.id.uploadedImage);
         uploadImage = findViewById(R.id.uploadImage);
@@ -68,7 +80,26 @@ public class DonateActivity extends AppCompatActivity
             }
         });
 
-        btnDonate.setOnClickListener(v -> Toast.makeText(getApplicationContext(), "Donate Button Clicked", Toast.LENGTH_SHORT).show());
+        btnDonate.setOnClickListener(new View.OnClickListener()
+        {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void onClick(View v)
+            {
+
+                DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+                LocalDateTime now = LocalDateTime.now();
+
+                DonationRequestCollection dcol = new DonationRequestCollection(DatabaseHandle.db);
+                dcol.addDonation(requestId,LocalStorage.getValue("userId",DonateActivity.this),
+                        "",now.toString(),description.getText().toString(),DonateActivity.this);
+
+            }
+        });
+
+
+//        btnDonate.setOnClickListener(v ->
+//                Toast.makeText(getApplicationContext(), "Donate Button Clicked", Toast.LENGTH_SHORT).show());
 
         spinner = (Spinner) findViewById(R.id.langSpinner);
 
@@ -159,5 +190,17 @@ public class DonateActivity extends AppCompatActivity
     }
 
 
+    @Override
+    public void processDonationSuccess()
+    {
+        Intent intent = new Intent(this, GiverActivity.class);
+        Toast.makeText(getApplicationContext(), "Thank you for donating", Toast.LENGTH_LONG).show();
+        startActivity(intent);
+    }
 
+    @Override
+    public void processDonationFailure()
+    {
+        Toast.makeText(getApplicationContext(), "Failed", Toast.LENGTH_LONG).show();
+    }
 }

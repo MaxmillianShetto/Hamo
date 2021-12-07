@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import com.dpsd.hamo.controllers.Donator;
 import com.dpsd.hamo.controllers.ReportDisplayer;
 import com.dpsd.hamo.controllers.RequestAdder;
 import com.dpsd.hamo.controllers.RequestReader;
@@ -47,6 +48,11 @@ public class DonationRequestCollection {
     public static final String imageUriField ="imageuri";
     public static final String latitudeField="latitude";
     public static final String longitudeField = "longitude";
+    public static final String donationRequestIdField="donationRequestId";
+    public static final String donationDescField = "donationDesc";
+    public static final String donorIdField = "donorId";
+    public static final String donationDateField = "donationDate";
+    public static final String donationImgUriField="donationImgUri";
 
     String TAG = "DonationRequestCollection";
     FirebaseFirestore db;
@@ -119,50 +125,37 @@ public class DonationRequestCollection {
         }
     }
 
-    public void addDonation(String donationRequestId,String donorId,String donorName,
-                            String donationDate,String itemsDescription)
+    public void addDonation(String donationRequestId, String donorId, String donorName,
+                            String donationDate, String itemsDescription, Donator donator)
     {
-        if(donationRequestId.trim().equals("")||donorId.trim().equals("")||
-                donorName.trim().equals("")||donationDate.trim().equals(""))
-        {
-            //display error msg
-            return;
-        }
-
         try
         {
-            CollectionReference donationRequestsRef = db.collection(name);
-            donationRequestsRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                    if (task.isSuccessful()) {
-                        boolean exist = false;
-                        for(QueryDocumentSnapshot document: task.getResult())
+            Map<String, Object> record = new HashMap<>();
+            record.put(donationRequestIdField, donationRequestId);
+            record.put(donorIdField, donorId);
+            record.put(donationDateField,donationDate);
+            record.put(donationDescField,itemsDescription);
+            record.put(donationImgUriField,"");
+
+            db.collection("donations").add(record).addOnCompleteListener(
+                    new OnCompleteListener<DocumentReference>()
+                    {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentReference> task)
                         {
-                            if(document.getId().toString().equals(donationRequestId))
+                            if(task.isSuccessful())
                             {
-                                //work with donation request
-                                Map<String, Object> record = document.getData();
-                                ArrayList<Donor> donors =(ArrayList<Donor>) record.get(donorsField);
-                                donors.add(new Donor(donorId,donorName,donationDate,itemsDescription));
-                                record.put(donorsField,donors);
-                                donationRequestsRef.document(document.getId()).set(record);
-                                exist = true;
-                                break;
+                                donator.processDonationSuccess();
+                            }
+                            else
+                            {
+                                donator.processDonationFailure();
                             }
                         }
-                        if(!exist)
-                        {
-                            //request id does not exist
-                        }
                     }
-                    else
-                    {
-                        //put failure or error in responding to db code here
-                    }
+            );
 
-                }
-            });
+
         }
         catch (Exception ex)
         {
@@ -308,25 +301,28 @@ public class DonationRequestCollection {
     {
         try
         {
-            db.collection(name).document(requestId).get()
-                    .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            db.collection("donations").whereEqualTo(donationRequestIdField,requestId).get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
+                    {
                         @Override
-                        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        public void onComplete(@NonNull Task<QuerySnapshot> task)
+                        {
                             if(task.isSuccessful())
                             {
-                                DocumentSnapshot document = task.getResult();
-                                if(document.exists())
+                                DocumentSnapshot curDoc=null;
+                                ArrayList<String> donorList = new ArrayList<>();
+                                for(DocumentSnapshot doc : task.getResult())
                                 {
-                                    ArrayList<Donor> donors =(ArrayList<Donor>) document.get(donorsField);
-                                    reportDisplayer.showRepresentativeReport(donors);
+                                    donorList.add(doc.get(donorIdField).toString());
                                 }
-                            }
-                            else
-                            {
-                                //handle db error here
+                                if(donorList.size()>0)
+                                {
+
+                                }
                             }
                         }
                     });
+
         }
         catch (Exception ex)
         {
