@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -183,9 +184,10 @@ public class GiverHomeFragment extends Fragment implements RequestReader
                         {
 
                             String markerTitle = marker.getTitle();
-
+                            RequestInfo requestInfo = getRequestInfo(markerTitle);
                             Intent markerIntent = new Intent(getActivity(), DonationRequestDetailsActivity.class);
                             markerIntent.putExtra("title", markerTitle);
+                            markerIntent.putExtra("requestInfo", requestInfo);
                             startActivity(markerIntent);
                             Toast.makeText(getContext(), "Clicked marker", Toast.LENGTH_SHORT).show();
 
@@ -213,5 +215,17 @@ public class GiverHomeFragment extends Fragment implements RequestReader
     {
         Log.i("data", requestInfo.toString());
         requests.add(requestInfo);
+    }
+
+    public RequestInfo getRequestInfo(String summary)
+    {
+        for(int i  = 0; i < requests.size(); i++)
+        {
+            if (requests.get(i).getSummary().equals(summary))
+            {
+                return requests.get(i);
+            }
+        }
+        return null;
     }
 }

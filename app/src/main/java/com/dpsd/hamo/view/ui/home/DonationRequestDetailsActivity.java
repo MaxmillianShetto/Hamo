@@ -1,15 +1,20 @@
 package com.dpsd.hamo.view.ui.home;
 
+import static android.content.ContentValues.TAG;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.dpsd.hamo.R;
+import com.dpsd.hamo.dbmodel.dbhelpers.RequestInfo;
 
 public class DonationRequestDetailsActivity extends AppCompatActivity
 {
@@ -30,6 +35,8 @@ public class DonationRequestDetailsActivity extends AppCompatActivity
         txtProceed = findViewById(R.id.txtProceed);
 
         String title = getIntent().getStringExtra("title");
+        RequestInfo requestInfo = (RequestInfo) getIntent().getSerializableExtra("requestInfo");
+        Log.d(TAG, "onCreate: n" + requestInfo.toString());
         txtTitle.setText(title);
 
         txtProceed.setOnClickListener(new View.OnClickListener()

@@ -1,6 +1,9 @@
 package com.dpsd.hamo.dbmodel.dbhelpers;
 
-public class RequestInfo {
+import java.io.Serializable;
+
+public class RequestInfo implements Serializable
+{
     String requestId;
     String latitude;
     String longitude;
@@ -44,6 +47,10 @@ public class RequestInfo {
     public String getRequestDate()
     {
         return  requestDate;
+    }
+    public String getImageUri()
+    {
+        return imageUri;
     }
 
     @Override
