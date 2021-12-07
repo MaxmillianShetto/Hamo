@@ -187,48 +187,14 @@ public class DonationRequestCollection {
                             if(document.get(stateField).toString().trim().equals("active"))
                             {
                                 //get current location
-                                repId = document.get(representativeIdField).toString();
-                                try
-                                {
-                                    db.collection(UsersCollection.name)
-                                            .document(repId).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>()
-                                    {
-                                        @Override
-                                        public void onComplete(@NonNull Task<DocumentSnapshot> task)
-                                        {
-                                            DocumentSnapshot doc = task.getResult();
-                                            if(task.isSuccessful())
-                                            {
-                                               ArrayList<GpsLocation> userLocation = (ArrayList<GpsLocation>) doc.get(UsersCollection.gpsLocationsField);
-                                                if(userLocation.size()>0)
-                                                {
-                                                    //set all info
-                                                    requestInfos.add(new RequestInfo(doc.getId().toString(),
-                                                            userLocation.get(userLocation.size()-1).latitude,
-                                                            userLocation.get(userLocation.size()-1).longitude,
-                                                            document.get(summaryField).toString(),
-                                                            document.get(detailsField).toString(),
-                                                            document.get(requestDateField).toString()));
-                                                    Log.d(TAG, "onComplete: lat " +lat
-                                                            + "long: " + lon);
-
-                                                    requestReader.updateList(new RequestInfo(doc.getId().toString(),
-                                                            userLocation.get(userLocation.size()-1).latitude,
-                                                            userLocation.get(userLocation.size()-1).longitude,
-                                                            document.get(summaryField).toString(),
-                                                            document.get(detailsField).toString(),
-                                                            document.get(requestDateField).toString()));
-                                                }
-                                            }
-                                        }
-                                    });
-
-
-                                }
-                                catch (Exception ex)
-                                {
-                                    Log.d(TAG, "onComplete: "+ex.getMessage());
-                                }
+                                requestInfos.add(new RequestInfo(document.get(representativeIdField).toString(),
+                                        document.get(latitudeField).toString(),
+                                        document.get(longitudeField).toString(),
+                                        document.get(summaryField).toString(),
+                                        document.get(detailsField).toString(),
+                                        document.get(requestDateField).toString(),
+                                        document.get(imageUriField).toString()
+                                        ));
 
                             }
 

@@ -45,6 +45,7 @@ public class GiverHomeFragment extends Fragment implements RequestReader
     FusedLocationProviderClient providerClient;
     AppCompatActivity activity;
     Context context;
+    GoogleMap gMap;
 
     ArrayList<RequestInfo> requests;
 
@@ -104,6 +105,7 @@ public class GiverHomeFragment extends Fragment implements RequestReader
             @Override
             public void onMapReady(@NonNull GoogleMap googleMap)
             {
+                gMap = googleMap;
                 if(requests == null)
                     Toast.makeText(getContext(), "No data", Toast.LENGTH_SHORT).show();
                 else
@@ -163,27 +165,18 @@ public class GiverHomeFragment extends Fragment implements RequestReader
 
     private void loadMap()
     {
-        supportMapFragment.getMapAsync(new OnMapReadyCallback()
-        {
-            @Override
-            public void onMapReady(@NonNull GoogleMap googleMap)
-            {
-                if(requests == null)
-                    Toast.makeText(getContext(), "No data", Toast.LENGTH_SHORT).show();
-                else
-                {
-                    for (int i = 0; i < requests.size(); i++)
+        for (int i = 0; i < requests.size(); i++)
                     {
                         LatLng one = new LatLng(Double.parseDouble(requests.get(i).getLatitude()),
                                 Double.parseDouble(requests.get(i).getLongitude()));
                         MarkerOptions options = new MarkerOptions().position(one).title(String.valueOf(requests.get(i).getSummary()));
-                        googleMap.addMarker(options);
+                        gMap.addMarker(options);
 
-                        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(one, 10));
+                        gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(one, 10));
 
                     }
 
-                    googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener()
+        gMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener()
                     {
                         @Override
                         public boolean onMarkerClick(@NonNull Marker marker)
@@ -199,17 +192,20 @@ public class GiverHomeFragment extends Fragment implements RequestReader
                             return false;
                         }
                     });
-                }
-            }
-        });
+
+
+
     }
 
     @Override
     public void processRequest(ArrayList<RequestInfo> requestInfos)
     {
         requests = requestInfos;
-
-//        loadMap();
+        if (requests != null)
+        {
+            Toast.makeText(getContext(), requests.get(0).toString(),Toast.LENGTH_LONG).show();
+        }
+        loadMap();
     }
 
     @Override

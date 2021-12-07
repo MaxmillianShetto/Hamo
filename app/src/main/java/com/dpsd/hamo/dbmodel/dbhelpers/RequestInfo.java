@@ -7,8 +7,10 @@ public class RequestInfo {
     String summary;
     String details;
     String requestDate;
+    String imageUri;
 
-    public RequestInfo(String reqId,String lat, String lon,String _summary,String _details,String reqDate)
+    public RequestInfo(String reqId,String lat, String lon,String _summary,
+                       String _details,String reqDate,String _imageUri)
     {
         requestId = reqId;
         latitude = lat;
@@ -16,6 +18,7 @@ public class RequestInfo {
         summary = _summary;
         details = _details;
         requestDate = reqDate;
+        imageUri = _imageUri;
     }
 
     public String getLatitude()
@@ -53,6 +56,7 @@ public class RequestInfo {
                 ", summary='" + summary + '\'' +
                 ", details='" + details + '\'' +
                 ", requestDate='" + requestDate + '\'' +
+                ", uri='" + imageUri + '\'' +
                 '}';
     }
 }
