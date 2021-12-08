@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import com.dpsd.hamo.controllers.DonationGetterI;
 import com.dpsd.hamo.controllers.Donator;
 import com.dpsd.hamo.dbmodel.dbhelpers.DonationGetter;
+import com.dpsd.hamo.dbmodel.dbhelpers.LocalStorage;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
@@ -28,6 +29,8 @@ public class DonorsCollection {
     public static final String latitudeField ="latitude";
     public static final String longitudeField = "longitude";
     public static final String itemsImageUriField = "imageUri";
+    public static final String stateField="state";
+    public static final String representiveIdField="repId";
 
     FirebaseFirestore db;
 
@@ -39,7 +42,8 @@ public class DonorsCollection {
     }
 
     public void addDonation(String donationRequestId, String donorId, String donorName,
-                            String donationDate, String itemsDescription,String lat,String lon, Donator donator)
+                            String donationDate, String itemsDescription,String lat,String lon,
+                            String repId, Donator donator)
     {
         try
         {
@@ -52,6 +56,8 @@ public class DonorsCollection {
             record.put(latitudeField,lat);
             record.put(longitudeField,lon);
             record.put(donorNameField,donorName);
+            record.put(stateField,"pending");
+            record.put(representiveIdField,repId);
 
             db.collection(name).add(record).addOnCompleteListener(
                     new OnCompleteListener<DocumentReference>()
@@ -102,6 +108,39 @@ public class DonorsCollection {
         }
     }
 
+    public void getRepDonations(String repId,DonationGetterI donationProcessor)
+    {
+        try
+        {
+            db.collection(name).whereEqualTo(representiveIdField,repId).whereEqualTo(stateField,"pending").get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if(task.isSuccessful())
+                            {
+                                ArrayList<DonationGetter> donations = new ArrayList<>();
+                                for (DocumentSnapshot doc : task.getResult())
+                                {
+                                    donations.add(new DonationGetter(doc.get(donorNameField).toString(),
+                                            doc.get(donationDateField).toString(),doc.get(descriptionField).toString(),
+                                            doc.get(itemsImageUriField).toString()));
+                                }
+
+                                donationProcessor.processSuccess(donations);
+
+                            }
+                            else
+                            {
+                                donationProcessor.processFailure();
+                            }
+                        }
+                    });
+        }
+        catch (Exception ex)
+        {
+            Log.d(TAG, "getDonations: "+ex.getMessage());
+        }
+    }
     public void getDonations(String requestId, DonationGetterI donationProcessor)
     {
         try

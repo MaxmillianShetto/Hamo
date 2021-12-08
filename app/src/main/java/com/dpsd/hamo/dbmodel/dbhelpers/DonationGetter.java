@@ -5,6 +5,7 @@ public class DonationGetter {
     public String date;
     public String description;
     public String itemsImageUri;
+    public String state="active";
 
     public DonationGetter(){
 

@@ -97,7 +97,9 @@ public class DonateActivity extends AppCompatActivity implements Donator
 
                 DonorsCollection dcol = new DonorsCollection(DatabaseHandle.db);
                 dcol.addDonation(requestId,LocalStorage.getValue("userId",DonateActivity.this),
-                        LocalStorage.getValue("name",getApplicationContext()),now.toString(),description.getText().toString(),lat, lng,DonateActivity.this);
+                        LocalStorage.getValue("name",getApplicationContext()),now.toString(),
+                    description.getText().toString(),lat, lng,LocalStorage.getValue("userId",DonateActivity.this),
+                    DonateActivity.this);
 
             }
         });
