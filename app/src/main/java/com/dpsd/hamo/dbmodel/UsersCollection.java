@@ -13,6 +13,8 @@ import com.dpsd.hamo.controllers.Login;
 import com.dpsd.hamo.controllers.SignUp;
 import com.dpsd.hamo.controllers.Updater;
 import com.dpsd.hamo.dbmodel.dbhelpers.GpsLocation;
+import com.dpsd.hamo.dbmodel.dbhelpers.LocalStorage;
+import com.dpsd.hamo.dbmodel.dbhelpers.UserGetter;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
@@ -100,9 +102,7 @@ public class UsersCollection
             login.fieldsEmptyErrorMessage();
             return;
         }
-       // Log.i("Login", "first part");
 
-        //use value holder to get user's full name
         try
         {
             Log.e(TAG, "called");
@@ -140,11 +140,8 @@ public class UsersCollection
                                     boolean isRole = document.get(roleField).toString().trim().equals(role);
                                     if(emailIsValid && passwordIsValid && isRole)
                                     {
-                                        Log.e(TAG, "onComplete: got here");
-//                                        ArrayList<GpsLocation> locationData= (ArrayList<GpsLocation>) document.get(gpsLocationsField);
-                                        Log.e(TAG, "onComplete: passed");
-//                                        locationData.get(locationData.size() - 1).latitude,locationData.get(locationData.size() - 1).longitude
-                                        login.proceedToHomePage(role, document.getId());
+                                        UserGetter  user = document.toObject(UserGetter.class);
+                                        login.proceedToHomePage(document.getId(), user);
                                     }
                                     else
                                     {

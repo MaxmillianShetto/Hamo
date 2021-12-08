@@ -25,6 +25,7 @@ import com.dpsd.hamo.databinding.FragmentLoginBinding;
 import com.dpsd.hamo.dbmodel.DatabaseHandle;
 import com.dpsd.hamo.dbmodel.UsersCollection;
 import com.dpsd.hamo.dbmodel.dbhelpers.LocalStorage;
+import com.dpsd.hamo.dbmodel.dbhelpers.UserGetter;
 import com.dpsd.hamo.view.UserActivityFactory;
 
 import java.util.HashMap;
@@ -166,11 +167,22 @@ public class LoginFragment extends Fragment implements Login, AdapterView.OnItem
     }
 
     @Override
-    public void proceedToHomePage(String role)
+    public void proceedToHomePage(String userId,UserGetter user)
     {
         Toast.makeText(getContext(),"successful", Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(getActivity(), (Class<?>) UserActivityFactory.loadActivity(role));
-        intent.putExtra("role", role);
+        Intent intent = new Intent(getActivity(), (Class<?>) UserActivityFactory.loadActivity(user.role));
+        intent.putExtra("role", user.role);
+        int locCount = user.gpslocations.size();
+        LocalStorage.AddKeyValue("name",user.fullname,getContext());
+        LocalStorage.AddKeyValue("userId",userId,getContext());
+        String lat="",lon="";
+        if(locCount>0)
+        {
+            lat = user.gpslocations.get(locCount-1).latitude;
+            lon = user.gpslocations.get(locCount-1).longitude;
+        }
+        LocalStorage.AddKeyValue("latitude",lat,getContext());
+        LocalStorage.AddKeyValue("longitude",lon,getContext());
         startActivity(intent);
     }
 //    , String lat, String lng
@@ -181,8 +193,7 @@ public class LoginFragment extends Fragment implements Login, AdapterView.OnItem
         Intent intent = new Intent(getActivity(), (Class<?>) UserActivityFactory.loadActivity(role));
         LocalStorage.AddKeyValue("userId", userId, getContext());
         LocalStorage.AddKeyValue("role", role, getContext());
-//        LocalStorage.AddKeyValue("latitude", lat, getContext());
-//        LocalStorage.AddKeyValue("longitude", lng, getContext());
+
         startActivity(intent);
 
     }

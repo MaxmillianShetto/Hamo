@@ -50,10 +50,8 @@ public class DonationRequestCollection {
     public static final String latitudeField="latitude";
     public static final String longitudeField = "longitude";
     public static final String donationRequestIdField="donationRequestId";
-    public static final String donationDescField = "donationDesc";
     public static final String donorIdField = "donorId";
-    public static final String donationDateField = "donationDate";
-    public static final String donationImgUriField="donationImgUri";
+
 
     String TAG = "DonationRequestCollection";
     FirebaseFirestore db;
@@ -126,45 +124,6 @@ public class DonationRequestCollection {
         }
     }
 
-    public void addDonation(String donationRequestId, String donorId, String donorName,
-                            String donationDate, String itemsDescription,String lat,String lon, Donator donator)
-    {
-        try
-        {
-            Map<String, Object> record = new HashMap<>();
-            record.put(donationRequestIdField, donationRequestId);
-            record.put(donorIdField, donorId);
-            record.put(donationDateField,donationDate);
-            record.put(donationDescField,itemsDescription);
-            record.put(donationImgUriField,"");
-            record.put("latitude",lat);
-            record.put("longitude",lon);
-
-            db.collection("donations").add(record).addOnCompleteListener(
-                    new OnCompleteListener<DocumentReference>()
-                    {
-                        @Override
-                        public void onComplete(@NonNull Task<DocumentReference> task)
-                        {
-                            if(task.isSuccessful())
-                            {
-                                donator.processDonationSuccess();
-                            }
-                            else
-                            {
-                                donator.processDonationFailure();
-                            }
-                        }
-                    }
-            );
-
-
-        }
-        catch (Exception ex)
-        {
-            Log.d(TAG, "addDonation: "+ex.getMessage());
-        }
-    }
 
     public void getRequests(RequestReader requestReader)
     {

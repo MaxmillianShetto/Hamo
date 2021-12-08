@@ -28,6 +28,7 @@ import com.dpsd.hamo.controller.permissions.PermissionType;
 import com.dpsd.hamo.controllers.Donator;
 import com.dpsd.hamo.dbmodel.DatabaseHandle;
 import com.dpsd.hamo.dbmodel.DonationRequestCollection;
+import com.dpsd.hamo.dbmodel.DonorsCollection;
 import com.dpsd.hamo.dbmodel.dbhelpers.LocalStorage;
 import com.dpsd.hamo.view.GiverActivity;
 
@@ -92,9 +93,9 @@ public class DonateActivity extends AppCompatActivity implements Donator
                 String lat = LocalStorage.getValue("latitude", getApplicationContext());
                 String lng = LocalStorage.getValue("longitude", getApplicationContext());
 
-                DonationRequestCollection dcol = new DonationRequestCollection(DatabaseHandle.db);
+                DonorsCollection dcol = new DonorsCollection(DatabaseHandle.db);
                 dcol.addDonation(requestId,LocalStorage.getValue("userId",DonateActivity.this),
-                        "",now.toString(),description.getText().toString(),lat, lng,DonateActivity.this);
+                        LocalStorage.getValue("name",getApplicationContext()),now.toString(),description.getText().toString(),lat, lng,DonateActivity.this);
 
             }
         });
