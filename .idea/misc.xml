@@ -3,31 +3,9 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/share_folder/JavaWorkSpace/Hamo/app/src/main/res/layout/activity_admin.xml" value="0.1" />
-        <entry key="..\:/share_folder/JavaWorkSpace/Hamo/app/src/main/res/layout/activity_community_rep.xml" value="0.1" />
-        <entry key="..\:/share_folder/JavaWorkSpace/Hamo/app/src/main/res/layout/activity_create_request.xml" value="0.22" />
-        <entry key="..\:/share_folder/JavaWorkSpace/Hamo/app/src/main/res/layout/activity_donate.xml" value="0.15" />
-        <entry key="..\:/share_folder/JavaWorkSpace/Hamo/app/src/main/res/layout/activity_donation_details.xml" value="0.2" />
-        <entry key="..\:/share_folder/JavaWorkSpace/Hamo/app/src/main/res/layout/activity_donation_request_details.xml" value="0.25" />
-        <entry key="..\:/share_folder/JavaWorkSpace/Hamo/app/src/main/res/layout/activity_giver.xml" value="0.1" />
-        <entry key="..\:/share_folder/JavaWorkSpace/Hamo/app/src/main/res/layout/activity_login.xml" value="0.17844202898550723" />
-        <entry key="..\:/share_folder/JavaWorkSpace/Hamo/app/src/main/res/layout/fragment_admin_home.xml" value="0.1" />
-        <entry key="..\:/share_folder/JavaWorkSpace/Hamo/app/src/main/res/layout/fragment_community_rep_home.xml" value="0.1" />
-        <entry key="..\:/share_folder/JavaWorkSpace/Hamo/app/src/main/res/layout/fragment_community_rep_profile.xml" value="0.1" />
-        <entry key="..\:/share_folder/JavaWorkSpace/Hamo/app/src/main/res/layout/fragment_donation_screen.xml" value="0.18" />
-        <entry key="..\:/share_folder/JavaWorkSpace/Hamo/app/src/main/res/layout/fragment_forgot_password.xml" value="0.2" />
-        <entry key="..\:/share_folder/JavaWorkSpace/Hamo/app/src/main/res/layout/fragment_giver_home.xml" value="0.1" />
-        <entry key="..\:/share_folder/JavaWorkSpace/Hamo/app/src/main/res/layout/fragment_giver_profile.xml" value="0.1" />
-        <entry key="..\:/share_folder/JavaWorkSpace/Hamo/app/src/main/res/layout/fragment_giver_report.xml" value="0.1" />
-        <entry key="..\:/share_folder/JavaWorkSpace/Hamo/app/src/main/res/layout/fragment_home.xml" value="0.2" />
-        <entry key="..\:/share_folder/JavaWorkSpace/Hamo/app/src/main/res/layout/fragment_login.xml" value="0.2843601895734597" />
-        <entry key="..\:/share_folder/JavaWorkSpace/Hamo/app/src/main/res/layout/fragment_profile.xml" value="0.2" />
-        <entry key="..\:/share_folder/JavaWorkSpace/Hamo/app/src/main/res/layout/fragment_reset_password.xml" value="0.2" />
-        <entry key="..\:/share_folder/JavaWorkSpace/Hamo/app/src/main/res/layout/fragment_sign_up.xml" value="0.2" />
-        <entry key="..\:/share_folder/JavaWorkSpace/Hamo/app/src/main/res/layout/home_fragment.xml" value="0.1" />
-        <entry key="..\:/share_folder/JavaWorkSpace/Hamo/app/src/main/res/menu/bottom_nav_menu_admin.xml" value="0.1" />
-        <entry key="..\:/share_folder/JavaWorkSpace/Hamo/app/src/main/res/menu/bottom_nav_menu_community_rep.xml" value="0.1" />
-        <entry key="..\:/share_folder/JavaWorkSpace/Hamo/app/src/main/res/menu/bottom_nav_menu_giver.xml" value="0.1" />
+        <entry key="..\:/Users/Hp/Documents/GitHub/Hamo/app/src/main/res/layout/activity_profile.xml" value="0.19010416666666666" />
+        <entry key="..\:/Users/Hp/Documents/GitHub/Hamo/app/src/main/res/layout/activity_profile2.xml" value="0.1" />
+        <entry key="..\:/Users/Hp/Documents/GitHub/Hamo/app/src/main/res/layout/activity_report.xml" value="0.33" />
         <entry key="..\:/share_folder/JavaWorkSpace/Hamo3/app/src/main/res/layout/activity_main.xml" value="0.1" />
       </map>
     </option>
