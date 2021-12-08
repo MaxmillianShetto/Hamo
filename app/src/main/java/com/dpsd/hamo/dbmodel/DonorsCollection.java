@@ -7,6 +7,8 @@ import androidx.annotation.NonNull;
 import com.dpsd.hamo.controllers.DonationGetterI;
 import com.dpsd.hamo.controllers.Donator;
 import com.dpsd.hamo.dbmodel.dbhelpers.DonationGetter;
+import com.dpsd.hamo.dbmodel.dbhelpers.GivingGetter;
+import com.dpsd.hamo.dbmodel.dbhelpers.Givings;
 import com.dpsd.hamo.dbmodel.dbhelpers.LocalStorage;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -15,6 +17,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -141,11 +144,11 @@ public class DonorsCollection {
             Log.d(TAG, "getDonations: "+ex.getMessage());
         }
     }
-    public void getDonations(String requestId, DonationGetterI donationProcessor)
+    public void getDonations(String userId, DonationGetterI donationProcessor)
     {
         try
         {
-           db.collection(name).whereEqualTo(requestIdField,requestId).get()
+           db.collection(name).whereEqualTo(representiveIdField,userId).get()
            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                @Override
                public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -172,6 +175,39 @@ public class DonorsCollection {
         catch (Exception ex)
         {
             Log.d(TAG, "getDonations: "+ex.getMessage());
+        }
+    }
+
+    public void getDonorContributions(String donorId, GivingGetter givingGetter)
+    {
+        try
+        {
+           db.collection(name).whereEqualTo(donorIdField,donorId).get()
+           .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+               @Override
+               public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                   if(task.isSuccessful())
+                   {
+                       ArrayList<Givings> givings = new ArrayList<>();
+                     for(DocumentSnapshot doc : task.getResult())
+                     {
+                         givings.add(new Givings(doc.get(donationDateField).toString(),
+                                 "",doc.get(descriptionField).toString(),
+                                 doc.get(itemsImageUriField).toString()));
+                     }
+
+                     givingGetter.processGivingsSuccess(givings);
+                   }
+                   else
+                   {
+                       givingGetter.processFailure();
+                   }
+               }
+           })  ;
+        }
+        catch (Exception ex)
+        {
+            Log.d(TAG, "getDonorContributions: "+ex.getMessage());
         }
     }
 }

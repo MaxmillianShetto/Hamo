@@ -14,6 +14,7 @@ import com.dpsd.hamo.controllers.RequestReader;
 import com.dpsd.hamo.dbmodel.dbhelpers.Donor;
 import com.dpsd.hamo.dbmodel.dbhelpers.GivingInfo;
 import com.dpsd.hamo.dbmodel.dbhelpers.GpsLocation;
+import com.dpsd.hamo.dbmodel.dbhelpers.ReportI;
 import com.dpsd.hamo.dbmodel.dbhelpers.RequestInfo;
 import com.dpsd.hamo.dbmodel.dbhelpers.RequestSummary;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -135,7 +136,7 @@ public class DonationRequestCollection {
                         {
                             if(document.get(stateField).toString().trim().equals("active"))
                             {
-                                //get current location
+                                //add request
                                 requestInfos.add(new RequestInfo(document.get(representativeIdField).toString(),
                                         document.getId(),
                                         document.get(latitudeField).toString(),
@@ -168,24 +169,25 @@ public class DonationRequestCollection {
         }
     }
 
-    public void populateRequestIdsAndSummaries(Spinner spinner, Context context)
+    public void populateRequestIdsAndSummaries(ReportI reportI, String repId, Context context)
     {
         try
         {
-            db.collection(name).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            db.collection(name).whereEqualTo(representativeIdField,repId).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
                     if(task.isSuccessful())
                     {
                         ArrayList<RequestSummary> summaries = new ArrayList<>();
+                        ArrayList<String> justSummaries = new ArrayList<>();
                         for (QueryDocumentSnapshot document: task.getResult())
                         {
-                            summaries.add(new RequestSummary(document.getId().toString(),
+                            summaries.add(new RequestSummary(document.getId(),
                                     document.get(summaryField).toString()));
+                            justSummaries.add(document.get(summaryField).toString());
                         }
 
-                        ArrayAdapter<RequestSummary> adapter = new ArrayAdapter<RequestSummary>(context, android.R.layout.simple_spinner_dropdown_item, summaries);
-                        spinner.setAdapter(adapter);
+                        reportI.showSummaries(summaries);
                     }
                 }
             });

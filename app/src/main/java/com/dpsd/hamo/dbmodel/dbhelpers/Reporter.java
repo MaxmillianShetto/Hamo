@@ -21,8 +21,6 @@ public class Reporter {
     {
         TableRow hrow = new TableRow(_context);
         hrow.setBackgroundColor(Color.parseColor("#000000"));
-        // hrow.setBackgroundColor(Color.parseColor("#4169E1"));
-
         textView = new TextView(_context);
         textView.setText(headerText);
         textView.setTextColor(Color.parseColor("#ffffff"));
@@ -54,8 +52,6 @@ public class Reporter {
         hrow.addView(textView);
         return  hrow;
     }
-
-
 
     TableRow getRow(String text)
     {
@@ -94,27 +90,27 @@ public class Reporter {
         return  hrow;
     }
 
-    public void addRows(ArrayList<GivingInfo> givingInfos, TableLayout tableLayout, String tableTitle)
+    public void addDonationsReceived(ArrayList<DonationGetter> dons, TableLayout tableLayout)
     {
-
-        for(GivingInfo ginfo : givingInfos)
+        for(DonationGetter donor: dons)
         {
             tableLayout.addView(getSeperatorRow());
-            tableLayout.addView(getHeaderRow(ginfo.summary));
-            tableLayout.addView(getRow(ginfo.details));
-            tableLayout.addView(getRow(ginfo.representiveName));
-
+            tableLayout.addView(getHeaderRow(donor.name));
+            tableLayout.addView(getRow(donor.date));
+            tableLayout.addView(getRow(donor.description));
         }
     }
 
-   public void addRows(ArrayList<Donor> donors, TableLayout tableLayout)
+    public void addRows(ArrayList<Givings> givingInfos, TableLayout tableLayout, String tableTitle)
     {
-        for(Donor donor: donors)
+
+        for(Givings ginfo : givingInfos)
         {
             tableLayout.addView(getSeperatorRow());
-            tableLayout.addView(getHeaderRow(donor.getDonorName()));
-            tableLayout.addView(getRow(donor.getDonationDate()));
-            tableLayout.addView(getRow(donor.getItemsDescription()));
+            tableLayout.addView(getHeaderRow(ginfo.requestSummary));
+            tableLayout.addView(getRow(ginfo.itemsDescription));
+            tableLayout.addView(getRow(ginfo.donationDate));
+
         }
     }
 
