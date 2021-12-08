@@ -4,12 +4,17 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.dpsd.hamo.controllers.DonationGetterI;
 import com.dpsd.hamo.controllers.Donator;
+import com.dpsd.hamo.dbmodel.dbhelpers.DonationGetter;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -71,6 +76,40 @@ public class DonorsCollection {
         catch (Exception ex)
         {
             Log.d(TAG, "addDonation: "+ex.getMessage());
+        }
+    }
+
+    public void getDonations(String requestId, DonationGetterI donationProcessor)
+    {
+        try
+        {
+           db.collection(name).whereEqualTo(requestIdField,requestId).get()
+           .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+               @Override
+               public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                   if(task.isSuccessful())
+                   {
+                       ArrayList<DonationGetter> donations = new ArrayList<>();
+                       for (DocumentSnapshot doc : task.getResult())
+                       {
+                           donations.add(new DonationGetter(doc.get(donorNameField).toString(),
+                                   doc.get(donationDateField).toString(),doc.get(descriptionField).toString(),
+                                   doc.get(itemsImageUriField).toString()));
+                       }
+
+                       donationProcessor.processSuccess(donations);
+
+                   }
+                   else
+                   {
+                       donationProcessor.processFailure();
+                   }
+               }
+           });
+        }
+        catch (Exception ex)
+        {
+            Log.d(TAG, "getDonations: "+ex.getMessage());
         }
     }
 }

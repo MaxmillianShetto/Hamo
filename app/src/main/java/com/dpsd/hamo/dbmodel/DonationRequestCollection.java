@@ -1,25 +1,19 @@
 package com.dpsd.hamo.dbmodel;
 
 import android.content.Context;
-import android.location.Address;
-import android.net.Uri;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
-import com.dpsd.hamo.controllers.DonationGetter;
-import com.dpsd.hamo.controllers.Donator;
+import com.dpsd.hamo.controllers.DonationGetterI;
 import com.dpsd.hamo.controllers.ReportDisplayer;
 import com.dpsd.hamo.controllers.RequestAdder;
 import com.dpsd.hamo.controllers.RequestReader;
 import com.dpsd.hamo.dbmodel.dbhelpers.Donor;
-import com.dpsd.hamo.dbmodel.dbhelpers.FileStorage;
 import com.dpsd.hamo.dbmodel.dbhelpers.GivingInfo;
 import com.dpsd.hamo.dbmodel.dbhelpers.GpsLocation;
-import com.dpsd.hamo.dbmodel.dbhelpers.LocalStorage;
 import com.dpsd.hamo.dbmodel.dbhelpers.RequestInfo;
 import com.dpsd.hamo.dbmodel.dbhelpers.RequestSummary;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -259,60 +253,4 @@ public class DonationRequestCollection {
         }
     }
 
-    public void getDonations(String requestId, DonationGetter donationGetter)
-    {
-        try
-        {
-            db.collection("donations").whereEqualTo(donationRequestIdField,requestId).get()
-                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
-                    {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task)
-                        {
-                            if(task.isSuccessful())
-                            {
-                                ArrayList<String> donorList = new ArrayList<>();
-                                for(DocumentSnapshot doc : task.getResult())
-                                {
-                                    donorList.add(doc.get(donorIdField).toString());
-                                }
-                                if(donorList.size()>0)
-                                {
-                                    db.collection(UsersCollection.name).whereIn("id",donorList)
-                                            .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
-                                    {
-                                        @Override
-                                        public void onComplete(@NonNull Task<QuerySnapshot> task)
-                                        {
-                                            if(task.isSuccessful())
-                                            {
-                                                ArrayList<GpsLocation> locations = new ArrayList<>();
-                                                GpsLocation loc;
-                                                for (DocumentSnapshot udoc : task.getResult())
-                                                {
-                                                    loc = (GpsLocation) udoc.get(UsersCollection.gpsLocationsField);
-                                                    locations.add(loc);
-                                                }
-
-                                                //respond to success
-                                                donationGetter.processSuccess(locations);
-                                            }
-                                            else
-                                            {
-                                                //failure
-                                                donationGetter.processFailure();
-                                            }
-                                        }
-                                    });
-                                }
-                            }
-                        }
-                    });
-
-        }
-        catch (Exception ex)
-        {
-            Log.d(TAG, "getDonationsPerRequest: "+ex.getMessage());
-        }
-    }
 }
