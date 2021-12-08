@@ -18,6 +18,9 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import com.dpsd.hamo.R;
+import com.dpsd.hamo.controller.permissions.PermissionFactory;
+import com.dpsd.hamo.controller.permissions.PermissionManager;
+import com.dpsd.hamo.controller.permissions.PermissionType;
 import com.dpsd.hamo.controllers.RequestReader;
 import com.dpsd.hamo.controllers.ShowCoordinates;
 import com.dpsd.hamo.databinding.FragmentGiverHomeBinding;
@@ -89,14 +92,12 @@ public class GiverHomeFragment extends Fragment implements RequestReader
         binding = FragmentGiverHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-       // requests = new ArrayList<RequestInfo>();
-
         providerClient = LocationServices.getFusedLocationProviderClient(getContext());
         activity = (AppCompatActivity) getActivity();
         context = getContext();
 
-        locations = new ArrayList<LatLng>();
-        title = new ArrayList<String>();
+        PermissionManager permissionManager = PermissionFactory.getPermission(PermissionType.ACCESS_FINE_LOCATION);
+        permissionManager.checkPermission(getContext(),getActivity());
 
         supportMapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.giver_map);
         DonationRequestCollection donReq = new DonationRequestCollection(DatabaseHandle.db);
@@ -141,25 +142,6 @@ public class GiverHomeFragment extends Fragment implements RequestReader
                 }
             }
         });
-//        locations.add(sydney);
-//        locations.add(bee);
-//        locations.add(dog);
-
-//        title.add("Sydney");
-//        title.add("Bee");
-//        title.add("Dog");
-
-//        showCoordinates = new ShowCoordinates(getActivity(), providerClient, supportMapFragment);
-
-        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED)
-        {
-            //getCurrentLocation();
-//            showCoordinates.getCurrentLocation(getActivity(), locations, title);
-        } else
-        {
-            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 100);
-
-        }
 
         return root;
     }

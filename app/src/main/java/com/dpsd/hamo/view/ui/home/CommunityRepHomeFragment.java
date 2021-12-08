@@ -11,15 +11,21 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.dpsd.hamo.R;
+import com.dpsd.hamo.controllers.DonationGetterI;
 import com.dpsd.hamo.controllers.ShowCoordinates;
 import com.dpsd.hamo.databinding.FragmentCommunityRepHomeBinding;
 import com.dpsd.hamo.databinding.FragmentGiverHomeBinding;
+import com.dpsd.hamo.dbmodel.DatabaseHandle;
+import com.dpsd.hamo.dbmodel.DonationRequestCollection;
+import com.dpsd.hamo.dbmodel.DonorsCollection;
+import com.dpsd.hamo.dbmodel.dbhelpers.DonationGetter;
 import com.dpsd.hamo.dbmodel.dbhelpers.Donor;
 import com.dpsd.hamo.dbmodel.dbhelpers.LocalStorage;
 import com.dpsd.hamo.dbmodel.dbhelpers.RequestInfo;
@@ -42,7 +48,7 @@ import java.util.ArrayList;
  * Use the {@link CommunityRepHomeFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class CommunityRepHomeFragment extends Fragment
+public class CommunityRepHomeFragment extends Fragment implements DonationGetterI
 {
     private @NonNull FragmentCommunityRepHomeBinding binding;
 
@@ -53,7 +59,7 @@ public class CommunityRepHomeFragment extends Fragment
     ExtendedFloatingActionButton fab;
     GoogleMap gMap;
 
-    ArrayList<Donor> donors;
+    ArrayList<DonationGetter> donations;
 
     ArrayList<LatLng> locations;
     ArrayList<String> title;
@@ -93,6 +99,9 @@ public class CommunityRepHomeFragment extends Fragment
                 " " + LocalStorage.getValue("role", getContext());
         Toast.makeText(getContext(),dataSaved, Toast.LENGTH_SHORT).show();
 
+        DonorsCollection donReq = new DonorsCollection(DatabaseHandle.db);
+        donReq.getRepDonations(LocalStorage.getValue("userId", getContext()), CommunityRepHomeFragment.this);
+
         fab = binding.extendedFab;
 
         fab.setOnClickListener(new View.OnClickListener()
@@ -113,29 +122,36 @@ public class CommunityRepHomeFragment extends Fragment
             public void onMapReady(@NonNull GoogleMap googleMap)
             {
                 gMap = googleMap;
-                for (int i = 0; i < locations.size(); i++)
+                if(donations == null)
+                    Toast.makeText(getContext(), "No data", Toast.LENGTH_SHORT).show();
+                else
                 {
-                    MarkerOptions options = new MarkerOptions().position(locations.get(i)).title(String.valueOf(title.get(i)));
-                    googleMap.addMarker(options);
-
-                    googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(locations.get(i), 10));
-
-                }
-
-                googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener()
-                {
-                    @Override
-                    public boolean onMarkerClick(@NonNull Marker marker)
+                    for (int i = 0; i < donations.size(); i++)
                     {
-                        String markerTitle = marker.getTitle();
+                        LatLng one = new LatLng(Double.parseDouble(donations.get(i).getLatitude()),
+                                Double.parseDouble(donations.get(i).getLongitude()));
+                        MarkerOptions options = new MarkerOptions().position(one).title(String.valueOf(title.get(i)));
+                        googleMap.addMarker(options);
 
-                        Intent markerIntent = new Intent(getActivity(), DonationDetailsActivity.class);
-                        markerIntent.putExtra("title", markerTitle);
-                        startActivity(markerIntent);
+                        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(locations.get(i), 10));
 
-                        return false;
                     }
-                });
+
+                    googleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener()
+                    {
+                        @Override
+                        public boolean onMarkerClick(@NonNull Marker marker)
+                        {
+                            String markerTitle = marker.getTitle();
+
+                            Intent markerIntent = new Intent(getActivity(), DonationDetailsActivity.class);
+                            markerIntent.putExtra("title", markerTitle);
+                            startActivity(markerIntent);
+
+                            return false;
+                        }
+                    });
+                }
             }
         });
 
@@ -183,47 +199,63 @@ public class CommunityRepHomeFragment extends Fragment
         }
     }
 
-//    private void loadMap()
-//    {
-//        for (int i = 0; i < donors.size(); i++)
-//        {
-//            LatLng one = new LatLng(Double.parseDouble(donors.get(i).getLatitude()),
-//                    Double.parseDouble(donors.get(i).getLongitude()));
-//            MarkerOptions options = new MarkerOptions().position(one).title(String.valueOf(donors.get(i).getSummary()));
-//            gMap.addMarker(options);
-//
-//            gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(one, 10));
-//
-//        }
-//
-//        gMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener()
-//        {
-//            @Override
-//            public boolean onMarkerClick(@NonNull Marker marker)
-//            {
-//
-//                String markerTitle = marker.getTitle();
-//                RequestInfo requestInfo = getRequestInfo(markerTitle);
-//                Intent markerIntent = new Intent(getActivity(), DonationRequestDetailsActivity.class);
-//                markerIntent.putExtra("title", markerTitle);
-//                markerIntent.putExtra("requestInfo", requestInfo);
-//                startActivity(markerIntent);
-//                Toast.makeText(getContext(), "Clicked marker", Toast.LENGTH_SHORT).show();
-//
-//                return false;
-//            }
-//        });
-//    }
-//
-//    public RequestInfo getRequestInfo(String summary)
-//    {
-//        for(int i  = 0; i < donors.size(); i++)
-//        {
-//            if (donors.get(i).getSummary().equals(summary))
-//            {
-//                return donors.get(i);
-//            }
-//        }
-//        return null;
-//    }
+    @Override
+    public void processSuccess(ArrayList<DonationGetter> donationsFromDB)
+    {
+        donations = donationsFromDB;
+        Log.d("Community Rep", Integer.toString(donations.size()));
+        Toast.makeText(getContext(), Integer.toString(donations.size()), Toast.LENGTH_SHORT).show();
+        loadMap();
+    }
+
+    @Override
+    public void processFailure()
+    {
+
+    }
+
+
+    private void loadMap()
+    {
+        for (int i = 0; i < donations.size(); i++)
+        {
+            LatLng one = new LatLng(Double.parseDouble(donations.get(i).getLatitude()),
+                    Double.parseDouble(donations.get(i).getLongitude()));
+            MarkerOptions options = new MarkerOptions().position(one).title(String.valueOf(donations.get(i).getName()));
+            gMap.addMarker(options);
+
+            gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(one, 10));
+
+        }
+
+        gMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener()
+        {
+            @Override
+            public boolean onMarkerClick(@NonNull Marker marker)
+            {
+
+                String markerTitle = marker.getTitle();
+                DonationGetter donationDetails = getRequestInfo(markerTitle);
+                Intent markerIntent = new Intent(getActivity(), DonationDetailsActivity.class);
+                markerIntent.putExtra("title", markerTitle);
+                markerIntent.putExtra("requestInfo", donationDetails);
+                startActivity(markerIntent);
+                Toast.makeText(getContext(), "Clicked marker", Toast.LENGTH_SHORT).show();
+
+                return false;
+            }
+        });
+    }
+
+    public DonationGetter getRequestInfo(String summary)
+    {
+        for(int i  = 0; i < donations.size(); i++)
+        {
+            if (donations.get(i).getName().equals(summary))
+            {
+                return donations.get(i);
+            }
+        }
+        return null;
+    }
 }

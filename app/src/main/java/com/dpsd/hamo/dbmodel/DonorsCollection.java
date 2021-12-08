@@ -126,7 +126,8 @@ public class DonorsCollection {
                                 {
                                     donations.add(new DonationGetter(doc.get(donorNameField).toString(),
                                             doc.get(donationDateField).toString(),doc.get(descriptionField).toString(),
-                                            doc.get(itemsImageUriField).toString()));
+                                            doc.get(itemsImageUriField).toString(),doc.get(latitudeField).toString(),
+                                            doc.get(longitudeField).toString()));
                                 }
 
                                 donationProcessor.processSuccess(donations);
@@ -159,7 +160,8 @@ public class DonorsCollection {
                        {
                            donations.add(new DonationGetter(doc.get(donorNameField).toString(),
                                    doc.get(donationDateField).toString(),doc.get(descriptionField).toString(),
-                                   doc.get(itemsImageUriField).toString()));
+                                   doc.get(itemsImageUriField).toString(),doc.get(latitudeField).toString(),
+                                   doc.get(longitudeField).toString()));
                        }
 
                        donationProcessor.processSuccess(donations);
