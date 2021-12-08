@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -29,6 +30,7 @@ import com.dpsd.hamo.controllers.Donator;
 import com.dpsd.hamo.dbmodel.DatabaseHandle;
 import com.dpsd.hamo.dbmodel.DonationRequestCollection;
 import com.dpsd.hamo.dbmodel.DonorsCollection;
+import com.dpsd.hamo.dbmodel.dbhelpers.FileStorage;
 import com.dpsd.hamo.dbmodel.dbhelpers.LocalStorage;
 import com.dpsd.hamo.view.GiverActivity;
 
@@ -100,10 +102,6 @@ public class DonateActivity extends AppCompatActivity implements Donator
             }
         });
 
-
-//        btnDonate.setOnClickListener(v ->
-//                Toast.makeText(getApplicationContext(), "Donate Button Clicked", Toast.LENGTH_SHORT).show());
-
         spinner = (Spinner) findViewById(R.id.langSpinner);
 
         final String[] languages = {"Language", "English", "French"};
@@ -121,9 +119,6 @@ public class DonateActivity extends AppCompatActivity implements Donator
                 if (langSelected.equals("French"))
                 {
                     setLocal(DonateActivity.this, "fr");
-
-                    //Intent intent = getBaseContext().getPackageManager().getLaunchIntentForPackage(getBaseContext().getPackageName());
-                    //startActivity(intent);
 
                 }
                 else if(langSelected.equals("English"))
@@ -194,10 +189,13 @@ public class DonateActivity extends AppCompatActivity implements Donator
 
 
     @Override
-    public void processDonationSuccess()
+    public void processDonationSuccess(String donationId)
     {
         Intent intent = new Intent(this, GiverActivity.class);
         Toast.makeText(getApplicationContext(), "Thank you for donating", Toast.LENGTH_LONG).show();
+        //save image
+        saveImage(imageUri,donationId);
+        //move to home activity
         startActivity(intent);
     }
 
@@ -205,5 +203,18 @@ public class DonateActivity extends AppCompatActivity implements Donator
     public void processDonationFailure()
     {
         Toast.makeText(getApplicationContext(), "Failed", Toast.LENGTH_LONG).show();
+    }
+
+    private void saveImage(Uri imageUri,String donationId)
+    {
+        try
+        {
+            FileStorage.addDonorImage(LocalStorage.getValue("userId", this),requestId
+                    ,donationId,imageUri, this);
+        }
+        catch (Exception ex)
+        {
+            Log.d("Donation Activity", "saveImage: "+ex.getMessage());
+        }
     }
 }

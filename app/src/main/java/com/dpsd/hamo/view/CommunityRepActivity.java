@@ -30,7 +30,6 @@ public class CommunityRepActivity extends AppCompatActivity
         Intent intent = getIntent();
         String role = intent.getStringExtra("role");
 
-
         BottomNavigationView navView = findViewById(R.id.nav_view_community_rep);
 
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(

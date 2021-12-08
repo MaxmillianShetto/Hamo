@@ -61,7 +61,7 @@ public class DonorsCollection {
                         {
                             if(task.isSuccessful())
                             {
-                                donator.processDonationSuccess();
+                                donator.processDonationSuccess(task.getResult().getId().toString());
                             }
                             else
                             {
@@ -76,6 +76,29 @@ public class DonorsCollection {
         catch (Exception ex)
         {
             Log.d(TAG, "addDonation: "+ex.getMessage());
+        }
+    }
+
+    public void updateImageUri(String donationId, String imageUri)
+    {
+        try
+        {
+           db.collection(name).document(donationId).update(itemsImageUriField,imageUri)
+           .addOnCompleteListener(new OnCompleteListener<Void>() {
+               @Override
+               public void onComplete(@NonNull Task<Void> task) {
+                     if(task.isSuccessful())
+                     {
+                         Log.d(TAG, "onComplete: image saved");
+                     }
+                     else
+                         Log.d(TAG, "onComplete: failed to save image.");
+               }
+           }) ;
+        }
+        catch (Exception ex)
+        {
+            Log.d(TAG, "updateImageUri: "+ex.getMessage());
         }
     }
 

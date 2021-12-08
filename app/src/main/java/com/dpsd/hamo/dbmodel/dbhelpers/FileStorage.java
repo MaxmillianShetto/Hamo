@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 
 import com.dpsd.hamo.dbmodel.DatabaseHandle;
 import com.dpsd.hamo.dbmodel.DonationRequestCollection;
+import com.dpsd.hamo.dbmodel.DonorsCollection;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.storage.FirebaseStorage;
@@ -26,36 +27,27 @@ public class FileStorage {
     static String donorsFolder="donors";
     static String communityRepresentativeFolder="rep";
 
-    public static void addDonorImage(String giverId, String requestId, Uri imageUri, Context context,
-                                     ProgressBar progressBar){
+    public static void addDonorImage(String giverId, String requestId,String donationId, Uri imageUri, Context context){
         try
         {
-            String pic_id = requestId+"_"+giverId+"_"+System.currentTimeMillis();
-            //get and append file extension
-            pic_id+="."+getFileExtension(imageUri,context);
-            StorageReference donorImageRef = storageRef.child(donorsFolder+"/"+pic_id);
+            String pic_uri = getNextImageUri("giver",giverId,requestId,imageUri,context);
+            StorageReference donorImageRef = storageRef.child(pic_uri);
             //move file to server
             donorImageRef.putFile(imageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
                     if(task.isSuccessful())
                     {
-                        //
+                        //update donation with image uri
+                        DonorsCollection dns = new DonorsCollection(DatabaseHandle.db);
+                        dns.updateImageUri(donationId,pic_uri);
                     }
                     else
                     {
                         //respond to error
                     }
                 }
-            })
-                    .addOnProgressListener(new OnProgressListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onProgress(@NonNull UploadTask.TaskSnapshot snapshot) {
-                            int progress =(int) (100 * snapshot.getBytesTransferred()/snapshot.getTotalByteCount());
-                            //display this on progress bar
-                            progressBar.setProgress(progress);
-                        }
-                    });
+            });
 
         }
         catch (Exception ex)
@@ -65,7 +57,7 @@ public class FileStorage {
     }
 
     public static void addRequestImage(String repId,String requestId, Uri imageUri,
-                                       Context context/*,ProgressBar progressBar*/){
+                                       Context context){
         try
         {
             String  dburl = getNextImageUri("rep",repId,requestId,imageUri,context);
@@ -98,10 +90,14 @@ public class FileStorage {
     {
         String pic_id="";
         String uri ="";
+        pic_id = otherInfo+"_"+userId+"_"+System.currentTimeMillis();
         if(role.equals("rep"))
         {
-            pic_id = otherInfo+"_"+userId+"_"+System.currentTimeMillis();
             uri = communityRepresentativeFolder+"/"+pic_id;
+        }
+        else if(role.equals("giver"))
+        {
+           uri = donorsFolder+"/"+pic_id;
         }
 
         pic_id+="."+getFileExtension(imageUri,context);
