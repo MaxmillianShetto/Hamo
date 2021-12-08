@@ -137,6 +137,7 @@ public class DonationRequestCollection {
                             {
                                 //get current location
                                 requestInfos.add(new RequestInfo(document.get(representativeIdField).toString(),
+                                        document.getId(),
                                         document.get(latitudeField).toString(),
                                         document.get(longitudeField).toString(),
                                         document.get(summaryField).toString(),

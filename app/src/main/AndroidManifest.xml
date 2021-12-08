@@ -18,6 +18,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Hamo">
         <activity
+            android:name=".view.ui.ProfileActivity"
+            android:exported="false" />
+        <activity
             android:name=".view.ui.home.CreateRequestActivity"
             android:exported="false" />
         <activity

@@ -5,6 +5,7 @@ import java.io.Serializable;
 public class RequestInfo implements Serializable
 {
     String requestId;
+    String representativeId;
     String latitude;
     String longitude;
     String summary;
@@ -12,16 +13,17 @@ public class RequestInfo implements Serializable
     String requestDate;
     String imageUri;
 
-    public RequestInfo(String reqId,String lat, String lon,String _summary,
+    public RequestInfo(String reqId,String _requestId,String lat, String lon,String _summary,
                        String _details,String reqDate,String _imageUri)
     {
-        requestId = reqId;
+        representativeId = reqId;
         latitude = lat;
         longitude = lon;
         summary = _summary;
         details = _details;
         requestDate = reqDate;
         imageUri = _imageUri;
+        requestId = _requestId;
     }
 
     public String getLatitude()
@@ -52,18 +54,19 @@ public class RequestInfo implements Serializable
     {
         return imageUri;
     }
+    public String getRepresentativeId(){ return representativeId; }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "RequestInfo{" +
                 "requestId='" + requestId + '\'' +
+                ", representativeId='" + representativeId + '\'' +
                 ", latitude='" + latitude + '\'' +
                 ", longitude='" + longitude + '\'' +
                 ", summary='" + summary + '\'' +
                 ", details='" + details + '\'' +
                 ", requestDate='" + requestDate + '\'' +
-                ", uri='" + imageUri + '\'' +
+                ", imageUri='" + imageUri + '\'' +
                 '}';
     }
 }

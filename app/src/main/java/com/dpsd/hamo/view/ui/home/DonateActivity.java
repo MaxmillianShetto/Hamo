@@ -54,6 +54,7 @@ public class DonateActivity extends AppCompatActivity implements Donator
 
     Spinner spinner;
     String requestId="";
+    String repId = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -62,6 +63,7 @@ public class DonateActivity extends AppCompatActivity implements Donator
         setContentView(R.layout.activity_donate);
 
         requestId = getIntent().getExtras().getString("requestId");
+        repId = getIntent().getExtras().getString("repId");
 
         uploadedImage = findViewById(R.id.uploadedImage);
         uploadImage = findViewById(R.id.uploadImage);
@@ -94,11 +96,11 @@ public class DonateActivity extends AppCompatActivity implements Donator
                 LocalDateTime now = LocalDateTime.now();
                 String lat = LocalStorage.getValue("latitude", getApplicationContext());
                 String lng = LocalStorage.getValue("longitude", getApplicationContext());
-
+                String donorId= LocalStorage.getValue("userId",getApplicationContext());
+                String  donorName = LocalStorage.getValue("name",getApplicationContext());
                 DonorsCollection dcol = new DonorsCollection(DatabaseHandle.db);
-                dcol.addDonation(requestId,LocalStorage.getValue("userId",DonateActivity.this),
-                        LocalStorage.getValue("name",getApplicationContext()),now.toString(),
-                    description.getText().toString(),lat, lng,LocalStorage.getValue("userId",DonateActivity.this),
+                dcol.addDonation(requestId,donorId, donorName,now.toString(),
+                    description.getText().toString(),lat, lng,repId,
                     DonateActivity.this);
 
             }

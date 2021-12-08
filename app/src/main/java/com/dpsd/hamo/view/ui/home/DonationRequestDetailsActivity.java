@@ -53,6 +53,7 @@ public class DonationRequestDetailsActivity extends AppCompatActivity
             {
                 Intent donateIntent = new Intent(DonationRequestDetailsActivity.this, DonateActivity.class);
                 donateIntent.putExtra("requestId", requestInfo.getRequestId());
+                donateIntent.putExtra("repId",requestInfo.getRepresentativeId());
                 startActivity(donateIntent);
             }
         });
