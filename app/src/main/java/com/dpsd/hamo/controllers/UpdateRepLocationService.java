@@ -6,6 +6,9 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
+
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationRequest;
 import android.os.Build;
 import android.os.IBinder;
 
@@ -18,10 +21,15 @@ import com.dpsd.hamo.view.ui.home.DonationDetailsActivity;
 public class UpdateRepLocationService extends Service
 {
     private final int COMMUNITY_REP_LOCATION_REQUEST_CODE = 10;
+    private final int COMMUNITY_REP_LOCATION = 1;
+    private final long COMMUNITY_REP_LOCATION_INTERVAL = 5000;
+    private final String CHANNEL_ID = "Location";
     private final boolean runningQOrLater =
             android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O;
-    private final int COMMUNITY_REP_LOCATION = 1;
-    private final String CHANNEL_ID = "Location";
+    private LocationRequest communityRepLocation;
+    private FusedLocationProviderClient fusedRepLocationClient;
+
+
 
     public UpdateRepLocationService()
     {
@@ -69,6 +77,13 @@ public class UpdateRepLocationService extends Service
                     .setContentIntent(pendingIntent)
                     .build();
             startForeground(COMMUNITY_REP_LOCATION,locationNotification);
+    }
+
+    void communityRepLocationMonitor()
+    {
+        communityRepLocation = LocationRequest.create();
+        communityRepLocation.setInterval(COMMUNITY_REP_LOCATION_INTERVAL);
+        communityRepLocation.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
     }
 
     @Override
