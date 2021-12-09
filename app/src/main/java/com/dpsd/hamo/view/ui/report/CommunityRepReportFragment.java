@@ -68,21 +68,11 @@ public class CommunityRepReportFragment extends Fragment implements DonationGett
 
         table = binding.reportTable;
 
-        String role = LocalStorage.getValue("role",getContext());
+       // String role = LocalStorage.getValue("role",getContext());
         String userId = LocalStorage.getValue("userId",getContext());
         DonorsCollection donorcol = new DonorsCollection(DatabaseHandle.db);
-        DonationRequestCollection dreqcol = new DonationRequestCollection(DatabaseHandle.db);
+        donorcol.getDonations(userId, this);
 
-        if (role.trim().equals("giver"))
-        {
-            donorcol.getDonorContributions(userId, this);
-        }
-
-        else if (role.trim().equals("rep"))
-        {
-            donorcol.getDonations(userId, this);
-        }
-        // Inflate the layout for this fragment
         return root;
     }
 

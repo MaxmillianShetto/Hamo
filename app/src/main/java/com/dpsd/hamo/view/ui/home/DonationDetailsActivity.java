@@ -14,6 +14,7 @@ import com.dpsd.hamo.R;
 import com.dpsd.hamo.controller.permissions.PermissionFactory;
 import com.dpsd.hamo.controller.permissions.PermissionManager;
 import com.dpsd.hamo.controller.permissions.PermissionType;
+import com.dpsd.hamo.controllers.ImageLoader;
 import com.dpsd.hamo.dbmodel.dbhelpers.DonationGetter;
 import com.dpsd.hamo.view.CommunityRepActivity;
 
@@ -41,9 +42,10 @@ public class DonationDetailsActivity extends AppCompatActivity
 
         donorName.setText(donation.getName());
         donationDetails.setText(donation.getDescription());
+
         if (donation.getItemsImageUri() != null)
         {
-
+            ImageLoader.LoadImage(donation.getItemsImageUri(),imageSentByDonor);
         }
 
         acceptDonation.setOnClickListener(new View.OnClickListener()

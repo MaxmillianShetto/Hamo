@@ -79,7 +79,7 @@ public class UpdateRepLocationService extends Service
             startForeground(COMMUNITY_REP_LOCATION,locationNotification);
     }
 
-    void communityRepLocationMonitor()
+    void StartCommunityRepLocationMonitor()
     {
         communityRepLocation = LocationRequest.create();
         communityRepLocation.setInterval(COMMUNITY_REP_LOCATION_INTERVAL);

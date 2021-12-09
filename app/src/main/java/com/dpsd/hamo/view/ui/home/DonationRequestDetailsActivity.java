@@ -14,6 +14,7 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.dpsd.hamo.R;
+import com.dpsd.hamo.controllers.ImageLoader;
 import com.dpsd.hamo.dbmodel.dbhelpers.RequestInfo;
 
 public class DonationRequestDetailsActivity extends AppCompatActivity
@@ -36,13 +37,12 @@ public class DonationRequestDetailsActivity extends AppCompatActivity
         description = findViewById(R.id.txtDesccribe);
         viewImage = findViewById(R.id.displayImage);
 
-        String parentLink = "https://firebasestorage.googleapis.com/v0/b/hamo-98247.appspot.com/o/";
         String title = getIntent().getStringExtra("title");
         RequestInfo requestInfo = (RequestInfo) getIntent().getSerializableExtra("requestInfo");
         Log.d(TAG, "onCreate: n" + requestInfo.toString());
         txtTitle.setText(title);
         description.setText(requestInfo.getDetails());
-        viewImage.setImageBitmap(BitmapFactory.decodeFile(parentLink + requestInfo.getImageUri()));
+        ImageLoader.LoadImage(requestInfo.getImageUri(),viewImage);
 
 
         txtProceed.setOnClickListener(new View.OnClickListener()

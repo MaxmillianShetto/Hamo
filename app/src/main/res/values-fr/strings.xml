@@ -6,20 +6,19 @@
     <string name="donate">Donner</string>
 
     <string name="app_name">Hamo</string>
-    <string name="title_home">Home</string>
-    <string name="title_report">Report </string>
-    <string name="title_profile">Profile</string>
+    <string name="title_home">Accueil</string>
+    <string name="title_report">Signaler</string>
+    <string name="title_profile">Profil</string>Home
     <!-- Strings related to login -->
-    <string name="prompt_email">Email</string>
-    <string name="prompt_password">Password</string>
-    <string name="action_sign_in">Sign in or register</string>
-    <string name="action_sign_up">Sign Up</string>
-    <string name="welcome">"Welcome!"</string>
-    <string name="invalid_username">Not a valid username</string>
-    <string name="invalid_password">Password must be >5 characters</string>
-    <string name="login_failed">"Login failed"</string>
+    <string name="prompt_email">E-mail</string>
+    <string name="prompt_password">Mot de passe</string>
+    <string name="action_sign_in">Connexion ou Inscription</string>
+    <string name="action_sign_up">S\'inscrire</string>
+    <string name="welcome">"Bienvenue!"</string>
+    <string name="invalid_username">Pas un nom d\'utilisateur valide</string>
+    <string name="invalid_password">Le mot de passe doit contenir plus de 5 caractères</string>
+    <string name="login_failed">"Échec de la connexion"</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="login_fragment">Login</string>
     <string name="signup_fragment">Sign Up</string>
     <string name="roleGiver">giver</string>
@@ -43,6 +42,9 @@
     <string name="create_request">Create Request</string>
     <string name="summary">Summary</string>
     <string name="submit_request">Submit Request</string>
+    <string name="accept"><u>Accept</u></string>
+    <string name="decline"><u>Decline</u></string>
+    <string name="donation_details">Enter the donation details here</string>
 
     <string-array name="role_array">
         <item>Giver</item>

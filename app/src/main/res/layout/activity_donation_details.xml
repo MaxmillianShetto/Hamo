@@ -30,13 +30,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="TextView"
+                android:textSize="@dimen/text_details"
                 tools:layout_editor_absoluteX="186dp"
                 tools:layout_editor_absoluteY="144dp" />
 
             <ImageView
                 android:id="@+id/imageSentByDonor"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_width="match_parent"
+                android:layout_height="360dp"
+                android:layout_marginTop="@dimen/small_padding"/>
 
             <TextView
                 android:id="@+id/donationDetailsTextView"
@@ -44,19 +46,22 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/small_padding"
                 android:text="TextView"
+                android:textSize="@dimen/text_details"
                 tools:layout_editor_absoluteX="165dp"
                 tools:layout_editor_absoluteY="255dp" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center">
+                android:gravity="center"
+                android:layout_marginTop="@dimen/small_padding" >
 
                 <TextView
                     android:id="@+id/acceptTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/small_padding"
+                    android:textSize="@dimen/text_details"
                     android:text="@string/accept" />
 
                 <TextView
@@ -64,6 +69,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/small_padding"
+                    android:textSize="@dimen/text_details"
                     android:text="@string/decline" />
             </LinearLayout>
         </LinearLayout>
