@@ -7,6 +7,7 @@ import java.util.ArrayList;
 public interface RequestReader
 {
     public void processRequest(ArrayList<RequestInfo> requestInfos);
+
     public void updateList(RequestInfo requestInfo);
 
 }

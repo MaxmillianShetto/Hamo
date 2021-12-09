@@ -1,25 +1,21 @@
 package com.dpsd.hamo.view.ui.home;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.app.appsearch.StorageInfo;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.location.Address;
-import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationProvider;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.dpsd.hamo.R;
 import com.dpsd.hamo.controller.permissions.PermissionFactory;
@@ -32,16 +28,12 @@ import com.dpsd.hamo.dbmodel.dbhelpers.FileStorage;
 import com.dpsd.hamo.dbmodel.dbhelpers.GpsLocation;
 import com.dpsd.hamo.dbmodel.dbhelpers.LocalStorage;
 import com.dpsd.hamo.view.CommunityRepActivity;
-import com.dpsd.hamo.view.GiverActivity;
-import com.dpsd.hamo.view.login.SignUpFragment;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Locale;
 
 public class CreateRequestActivity extends AppCompatActivity implements RequestAdder
 {
@@ -52,12 +44,9 @@ public class CreateRequestActivity extends AppCompatActivity implements RequestA
     ImageView uploadedImageRep;
     Button submitRequest;
     Bitmap uploadedPhotoToSave;
-
-    private LocationProvider locationProvider;
-
     int REQUEST_CODE_UPLOAD = 1;
     int REQUEST_CODE_CAMERA = 100;
-
+    private LocationProvider locationProvider;
     private Uri imageUri;
 
     @Override
@@ -104,7 +93,8 @@ public class CreateRequestActivity extends AppCompatActivity implements RequestA
         });
     }
 
-    public void submitDonationRequest(){
+    public void submitDonationRequest()
+    {
 
         String summary = summaryEditText.getText().toString();
         String description = descriptionEditText.getText().toString();
@@ -192,14 +182,13 @@ public class CreateRequestActivity extends AppCompatActivity implements RequestA
         }
 
 
-
     }
 
     @Override
     public void saveImage(String requestId)
     {
-        if(imageUri!=null)
-            FileStorage.addRequestImage(LocalStorage.getValue("userId",this),
-                requestId,imageUri,this);
+        if (imageUri != null)
+            FileStorage.addRequestImage(LocalStorage.getValue("userId", this),
+                    requestId, imageUri, this);
     }
 }

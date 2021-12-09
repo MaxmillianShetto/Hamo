@@ -41,6 +41,9 @@
     <string name="summary">Summary</string>
     <string name="description">Description</string>
     <string name="submit_request">Submit Request</string>
+    <string name="accept">Accept</string>
+    <string name="decline">Decline</string>
+    <string name="donation_details">Enter the donation details here</string>
 
     <string-array name="role_array">
         <item>Giver</item>

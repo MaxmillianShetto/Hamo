@@ -6,12 +6,6 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationProvider;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-
 import android.os.StrictMode;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,6 +18,11 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.dpsd.hamo.R;
 import com.dpsd.hamo.controller.permissions.PermissionFactory;
@@ -57,14 +56,6 @@ import java.util.regex.Pattern;
  */
 public class SignUpFragment extends Fragment implements SignUp, AdapterView.OnItemSelectedListener
 {
-    private FragmentSignUpBinding binding;
-    private LocationProvider locationProvider;
-
-    private String role = "";
-    private Map<String, String> roleMap;
-    private String templateWelcome = ", welcome to Hamo platform. \n" +
-        "Thank you for joining us. Ready to make an impact!!!";
-
     public TextView loginTransitionTextView;
     public EditText emailOrPhoneNumberEditText;
     public EditText passwordEditText;
@@ -72,7 +63,12 @@ public class SignUpFragment extends Fragment implements SignUp, AdapterView.OnIt
     public EditText fullNameEditText;
     public Button singUpButton;
     public Spinner roleSpinner;
-
+    private FragmentSignUpBinding binding;
+    private LocationProvider locationProvider;
+    private String role = "";
+    private Map<String, String> roleMap;
+    private String templateWelcome = ", welcome to Hamo platform. \n" +
+            "Thank you for joining us. Ready to make an impact!!!";
 
 
     public SignUpFragment()
@@ -128,7 +124,7 @@ public class SignUpFragment extends Fragment implements SignUp, AdapterView.OnIt
             String fullName = fullNameEditText.getText().toString();
             String userEmailOrPhoneNumber = emailOrPhoneNumberEditText.getText().toString();
             String password = passwordEditText.getText().toString();
-            if(role.trim().equals(""))
+            if (role.trim().equals(""))
             {
                 role = roleMap.get(roleSpinner.getSelectedItem().toString());
             }
@@ -138,7 +134,7 @@ public class SignUpFragment extends Fragment implements SignUp, AdapterView.OnIt
             Pattern pattern = Pattern.compile(regexEmail);
             String email = "";
             String phoneNumber = "";
-            if(pattern.matcher(userEmailOrPhoneNumber).matches())
+            if (pattern.matcher(userEmailOrPhoneNumber).matches())
             {
                 email = userEmailOrPhoneNumber;
             }
@@ -150,8 +146,8 @@ public class SignUpFragment extends Fragment implements SignUp, AdapterView.OnIt
             PermissionManager permissionManager = PermissionFactory.getPermission((PermissionType.ACCESS_FINE_LOCATION));
             if (permissionManager.checkPermission(getContext(), getActivity()))
             {
-                saveUserDetails(fullName, email, phoneNumber, password,role,"",
-                         SignUpFragment.this, collection);
+                saveUserDetails(fullName, email, phoneNumber, password, role, "",
+                        SignUpFragment.this, collection);
             }
 
         });
@@ -161,7 +157,7 @@ public class SignUpFragment extends Fragment implements SignUp, AdapterView.OnIt
         roleMap.put(getString(R.string.community_rep), getString(R.string.roleRep));
 
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),
-                R.array.role_array , android.R.layout.simple_spinner_item);
+                R.array.role_array, android.R.layout.simple_spinner_item);
 
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         roleSpinner.setAdapter(adapter);
@@ -180,11 +176,13 @@ public class SignUpFragment extends Fragment implements SignUp, AdapterView.OnIt
     }
 
     public void onItemSelected(AdapterView<?> parent, View view,
-                               int pos, long id) {
+                               int pos, long id)
+    {
         role = roleMap.get(roleSpinner.getSelectedItem().toString());
     }
 
-    public void onNothingSelected(AdapterView<?> parent) {
+    public void onNothingSelected(AdapterView<?> parent)
+    {
         // Another interface callback
     }
 
@@ -209,7 +207,7 @@ public class SignUpFragment extends Fragment implements SignUp, AdapterView.OnIt
         String subject = "Welcome to Hamo";
         try
         {
-            emailSender.sendSignUpEmail(subject,emailBody.toString(), emailRecipient);
+            emailSender.sendSignUpEmail(subject, emailBody.toString(), emailRecipient);
         }
         catch (Exception e)
         {
@@ -225,7 +223,7 @@ public class SignUpFragment extends Fragment implements SignUp, AdapterView.OnIt
         message.append("Hello ");
         message.append(name);
         message.append(templateWelcome);
-        messenger.sendMessage(getContext(),getActivity(),phoneNumber, message.toString());
+        messenger.sendMessage(getContext(), getActivity(), phoneNumber, message.toString());
     }
 
     @Override
@@ -253,38 +251,38 @@ public class SignUpFragment extends Fragment implements SignUp, AdapterView.OnIt
         {
             fusedLocationClient.getLastLocation()
                     .addOnSuccessListener(new OnSuccessListener<Location>()
-            {
-                @Override
-                public void onSuccess(Location location)
-                {
-                    System.out.println(location);
-                    if (location != null)
                     {
-                        Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
-                        List<Address> addressList = null;
-
-                        try
+                        @Override
+                        public void onSuccess(Location location)
                         {
-                            addressList = geocoder.getFromLocation(
-                                    location.getLatitude(), location.getLongitude(), 1);
-                            if (addressList != null & addressList.size() > 0)
+                            System.out.println(location);
+                            if (location != null)
                             {
-                                Address currentAddress = addressList.get(0);
+                                Geocoder geocoder = new Geocoder(getContext(), Locale.getDefault());
+                                List<Address> addressList = null;
 
-                                collection.addUser(fullName, email, phoneNumber, password,role,"",
-                                        getLocation(currentAddress, currentLocation), SignUpFragment.this);
+                                try
+                                {
+                                    addressList = geocoder.getFromLocation(
+                                            location.getLatitude(), location.getLongitude(), 1);
+                                    if (addressList != null & addressList.size() > 0)
+                                    {
+                                        Address currentAddress = addressList.get(0);
+
+                                        collection.addUser(fullName, email, phoneNumber, password, role, "",
+                                                getLocation(currentAddress, currentLocation), SignUpFragment.this);
+                                    }
+                                }
+                                catch (IOException e)
+                                {
+                                    e.printStackTrace();
+                                }
+
                             }
+
+
                         }
-                        catch (IOException e)
-                        {
-                            e.printStackTrace();
-                        }
-
-                    }
-
-
-                }
-            })
+                    })
                     .addOnFailureListener(new OnFailureListener()
                     {
                         @Override
@@ -296,9 +294,9 @@ public class SignUpFragment extends Fragment implements SignUp, AdapterView.OnIt
                             try
                             {
                                 addressList = geocoder.getFromLocation(
-                                        -1.9422403,30.1201112, 1);
+                                        -1.9422403, 30.1201112, 1);
 
-                                collection.addUser(fullName, email, phoneNumber, password,role,"",
+                                collection.addUser(fullName, email, phoneNumber, password, role, "",
                                         getLocation(addressList.get(0), currentLocation), SignUpFragment.this);
                             }
                             catch (IOException er)
@@ -306,7 +304,6 @@ public class SignUpFragment extends Fragment implements SignUp, AdapterView.OnIt
                                 er.printStackTrace();
                             }
                             Log.i("Location", addressList.get(0).toString());
-
 
 
                         }
@@ -317,7 +314,7 @@ public class SignUpFragment extends Fragment implements SignUp, AdapterView.OnIt
     public ArrayList<GpsLocation> getLocation(Address currentAdd, GpsLocation currentLoc)
     {
         StringBuilder locationDetails = new StringBuilder();
-        locationDetails.append("Area: " +currentAdd.getSubAdminArea());
+        locationDetails.append("Area: " + currentAdd.getSubAdminArea());
         String moreDetails = currentAdd.getThoroughfare();
         if (!moreDetails.contains("Unnamed"))
         {

@@ -8,16 +8,18 @@ public class DonationGetter implements Serializable
     public String date;
     public String description;
     public String itemsImageUri;
-    public String state="active";
+    public String state = "active";
     public String latitude;
     public String longitude;
 
-    public DonationGetter(){
+    public DonationGetter()
+    {
 
     }
 
     public DonationGetter(String name, String date, String description, String itemsImageUri,
-                          String lat, String lng) {
+                          String lat, String lng)
+    {
         this.name = name;
         this.date = date;
         this.description = description;

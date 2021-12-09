@@ -1,12 +1,10 @@
 package com.dpsd.hamo.view;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.dpsd.hamo.R;
-import com.dpsd.hamo.dbmodel.dbhelpers.FileStorage;
 import com.dpsd.hamo.dbmodel.dbhelpers.LocalStorage;
 import com.dpsd.hamo.view.login.LoginFragment;
 
@@ -20,7 +18,8 @@ public class LoginActivity extends AppCompatActivity
         setContentView(R.layout.activity_login);
 
 
-        if (savedInstanceState == null) {
+        if (savedInstanceState == null)
+        {
             getSupportFragmentManager().beginTransaction()
                     .setReorderingAllowed(true)
                     .add(R.id.nav_fragment_activity_login, LoginFragment.class, null)

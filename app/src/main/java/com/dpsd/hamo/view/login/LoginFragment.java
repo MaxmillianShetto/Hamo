@@ -2,11 +2,6 @@ package com.dpsd.hamo.view.login;
 
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +13,10 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.dpsd.hamo.R;
 import com.dpsd.hamo.controllers.Login;
@@ -36,8 +35,6 @@ public class LoginFragment extends Fragment implements Login, AdapterView.OnItem
 {
 
 
-    private FragmentLoginBinding binding;
-
     // TODO: Rename and change types of parameters
     public TextView signUp;
     public TextView forgotPassword;
@@ -46,13 +43,10 @@ public class LoginFragment extends Fragment implements Login, AdapterView.OnItem
     public Button loginButton;
     public EditText emailOrPhoneNumberEditText;
     public EditText passwordEditText;
-
+    public Spinner roleSpinner;
+    private FragmentLoginBinding binding;
     private String role = "";
     private Map<String, String> roleMap;
-
-
-
-    public Spinner roleSpinner;
 
     public LoginFragment()
     {
@@ -122,12 +116,12 @@ public class LoginFragment extends Fragment implements Login, AdapterView.OnItem
                 UsersCollection collection = new UsersCollection(DatabaseHandle.db);
                 String userNameOrPhoneNumber = emailOrPhoneNumberEditText.getText().toString();
                 String password = passwordEditText.getText().toString();
-                if(role.trim().equals(""))
+                if (role.trim().equals(""))
                 {
                     role = roleMap.get(roleSpinner.getSelectedItem().toString());
                 }
                 collection.isUser(userNameOrPhoneNumber, password
-                            , role.trim(), LoginFragment.this);
+                        , role.trim(), LoginFragment.this);
                 Log.i("Login", "here");
             }
         });
@@ -138,7 +132,7 @@ public class LoginFragment extends Fragment implements Login, AdapterView.OnItem
         roleMap.put(getString(R.string.admin), getString(R.string.roleAdmin));
 
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getContext(),
-                R.array.role_array , android.R.layout.simple_spinner_item);
+                R.array.role_array, android.R.layout.simple_spinner_item);
 
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         roleSpinner.setAdapter(adapter);
@@ -167,29 +161,30 @@ public class LoginFragment extends Fragment implements Login, AdapterView.OnItem
     }
 
     @Override
-    public void proceedToHomePage(String userId,UserGetter user)
+    public void proceedToHomePage(String userId, UserGetter user)
     {
-        Toast.makeText(getContext(),"successful", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), "successful", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(getActivity(), (Class<?>) UserActivityFactory.loadActivity(user.role));
         intent.putExtra("role", user.role);
         int locCount = user.gpslocations.size();
-        LocalStorage.AddKeyValue("name",user.fullname,getContext());
-        LocalStorage.AddKeyValue("userId",userId,getContext());
-        String lat="",lon="";
-        if(locCount>0)
+        LocalStorage.AddKeyValue("name", user.fullname, getContext());
+        LocalStorage.AddKeyValue("userId", userId, getContext());
+        String lat = "", lon = "";
+        if (locCount > 0)
         {
-            lat = user.gpslocations.get(locCount-1).latitude;
-            lon = user.gpslocations.get(locCount-1).longitude;
+            lat = user.gpslocations.get(locCount - 1).latitude;
+            lon = user.gpslocations.get(locCount - 1).longitude;
         }
-        LocalStorage.AddKeyValue("latitude",lat,getContext());
-        LocalStorage.AddKeyValue("longitude",lon,getContext());
+        LocalStorage.AddKeyValue("latitude", lat, getContext());
+        LocalStorage.AddKeyValue("longitude", lon, getContext());
         startActivity(intent);
     }
-//    , String lat, String lng
+
+    //    , String lat, String lng
     @Override
     public void proceedToHomePage(String role, String userId)
     {
-        Toast.makeText(getContext(),"successful", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), "successful", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(getActivity(), (Class<?>) UserActivityFactory.loadActivity(role));
         LocalStorage.AddKeyValue("userId", userId, getContext());
         LocalStorage.AddKeyValue("role", role, getContext());
@@ -204,10 +199,10 @@ public class LoginFragment extends Fragment implements Login, AdapterView.OnItem
         String emailOrPhoneNumber = emailOrPhoneNumberEditText.getText().toString();
         String password = passwordEditText.getText().toString();
 
-        if(emailOrPhoneNumber.trim().equals(""))
+        if (emailOrPhoneNumber.trim().equals(""))
             errorEmailOrPhoneTextView.setText(R.string.email_phone_empty);
 
-        if(password.trim().equals(""))
+        if (password.trim().equals(""))
             errorPasswordTextView.setText(R.string.password_empty);
     }
 
@@ -224,11 +219,13 @@ public class LoginFragment extends Fragment implements Login, AdapterView.OnItem
     }
 
     public void onItemSelected(AdapterView<?> parent, View view,
-                               int pos, long id) {
+                               int pos, long id)
+    {
         role = roleMap.get(roleSpinner.getSelectedItem().toString());
     }
 
-    public void onNothingSelected(AdapterView<?> parent) {
+    public void onNothingSelected(AdapterView<?> parent)
+    {
         // Another interface callback
     }
 }

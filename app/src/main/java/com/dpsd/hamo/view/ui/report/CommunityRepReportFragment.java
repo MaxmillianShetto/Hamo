@@ -1,52 +1,54 @@
 package com.dpsd.hamo.view.ui.report;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Spinner;
+import android.widget.TableLayout;
 
-import com.dpsd.hamo.R;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+
+import com.dpsd.hamo.controllers.DonationGetterI;
+import com.dpsd.hamo.databinding.FragmentCommunityRepReportBinding;
+import com.dpsd.hamo.dbmodel.DatabaseHandle;
+import com.dpsd.hamo.dbmodel.DonationRequestCollection;
+import com.dpsd.hamo.dbmodel.DonorsCollection;
+import com.dpsd.hamo.dbmodel.dbhelpers.DonationGetter;
+import com.dpsd.hamo.dbmodel.dbhelpers.GivingGetter;
+import com.dpsd.hamo.dbmodel.dbhelpers.Givings;
+import com.dpsd.hamo.dbmodel.dbhelpers.LocalStorage;
+import com.dpsd.hamo.dbmodel.dbhelpers.ReportI;
+import com.dpsd.hamo.dbmodel.dbhelpers.Reporter;
+import com.dpsd.hamo.dbmodel.dbhelpers.RequestSummary;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link CommunityRepReportFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class CommunityRepReportFragment extends Fragment
+public class CommunityRepReportFragment extends Fragment implements DonationGetterI,
+        GivingGetter, ReportI
 {
+    private @NonNull
+    FragmentCommunityRepReportBinding binding;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    TableLayout table;
+    Spinner spinner;
 
     public CommunityRepReportFragment()
     {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment CommunityRepReportFragment.
-     */
-    // TODO: Rename and change types and number of parameters
     public static CommunityRepReportFragment newInstance(String param1, String param2)
     {
         CommunityRepReportFragment fragment = new CommunityRepReportFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -55,18 +57,67 @@ public class CommunityRepReportFragment extends Fragment
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null)
-        {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
+        binding = FragmentCommunityRepReportBinding.inflate(inflater, container, false);
+        View root = binding.getRoot();
+
+        table = binding.reportTable;
+
+        String role = LocalStorage.getValue("role",getContext());
+        String userId = LocalStorage.getValue("userId",getContext());
+        DonorsCollection donorcol = new DonorsCollection(DatabaseHandle.db);
+        DonationRequestCollection dreqcol = new DonationRequestCollection(DatabaseHandle.db);
+
+        if (role.trim().equals("giver"))
+        {
+            donorcol.getDonorContributions(userId, this);
+        }
+
+        else if (role.trim().equals("rep"))
+        {
+            donorcol.getDonations(userId, this);
+        }
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_community_rep_report, container, false);
+        return root;
+    }
+
+    @Override
+    public void processGivingsSuccess(ArrayList<Givings> givings)
+    {
+        Reporter reporter = new Reporter(getContext());
+        reporter.addRows(givings, table, "Givings Report");
+    }
+
+    @Override
+    public void processSuccess(ArrayList<DonationGetter> donations)
+    {
+
+        Reporter donRep = new Reporter(getContext());
+        donRep.addDonationsReceived(donations, table);
+    }
+
+    @Override
+    public void processFailure()
+    {
+
+    }
+
+    @Override
+    public void showSummaries(ArrayList<RequestSummary> summaries)
+    {
+        try
+        {
+
+        }
+        catch (Exception ex)
+        {
+            Log.d("ReportActivity", "showSummaries: " + ex.getMessage());
+        }
+
     }
 }

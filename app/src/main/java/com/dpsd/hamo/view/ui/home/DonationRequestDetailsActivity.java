@@ -2,8 +2,6 @@ package com.dpsd.hamo.view.ui.home;
 
 import static android.content.ContentValues.TAG;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -12,7 +10,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.dpsd.hamo.R;
 import com.dpsd.hamo.dbmodel.dbhelpers.RequestInfo;
@@ -53,7 +52,7 @@ public class DonationRequestDetailsActivity extends AppCompatActivity
             {
                 Intent donateIntent = new Intent(DonationRequestDetailsActivity.this, DonateActivity.class);
                 donateIntent.putExtra("requestId", requestInfo.getRequestId());
-                donateIntent.putExtra("repId",requestInfo.getRepresentativeId());
+                donateIntent.putExtra("repId", requestInfo.getRepresentativeId());
                 startActivity(donateIntent);
             }
         });

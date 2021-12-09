@@ -1,12 +1,8 @@
 package com.dpsd.hamo.view.ui.home;
 
-import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.Parcelable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +10,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
 import com.dpsd.hamo.R;
@@ -22,7 +17,6 @@ import com.dpsd.hamo.controller.permissions.PermissionFactory;
 import com.dpsd.hamo.controller.permissions.PermissionManager;
 import com.dpsd.hamo.controller.permissions.PermissionType;
 import com.dpsd.hamo.controllers.RequestReader;
-import com.dpsd.hamo.controllers.ShowCoordinates;
 import com.dpsd.hamo.databinding.FragmentGiverHomeBinding;
 import com.dpsd.hamo.dbmodel.DatabaseHandle;
 import com.dpsd.hamo.dbmodel.DonationRequestCollection;
@@ -41,30 +35,14 @@ import java.util.ArrayList;
 
 public class GiverHomeFragment extends Fragment implements RequestReader
 {
-    private @NonNull
-    FragmentGiverHomeBinding binding;
-
-
     SupportMapFragment supportMapFragment = new SupportMapFragment();
     FusedLocationProviderClient providerClient;
     AppCompatActivity activity;
     Context context;
     GoogleMap gMap;
-
     ArrayList<RequestInfo> requests;
-
-    ArrayList<LatLng> locations;
-    ArrayList<String> title;
-
-    ShowCoordinates showCoordinates;
-
-//    LatLng one = new LatLng(Double.parseDouble(requests.get(0).getLatitude()),
-//            Double.parseDouble(requests.get(0).getLongitude()));
-
-//    LatLng sydney = new LatLng(-34, 151);
-//    LatLng bee = new LatLng(-31.08, 150.9);
-//    LatLng dog = new LatLng(-30, 151.34);
-
+    private @NonNull
+    FragmentGiverHomeBinding binding;
 
     public GiverHomeFragment()
     {
@@ -97,7 +75,7 @@ public class GiverHomeFragment extends Fragment implements RequestReader
         context = getContext();
 
         PermissionManager permissionManager = PermissionFactory.getPermission(PermissionType.ACCESS_FINE_LOCATION);
-        permissionManager.checkPermission(getContext(),getActivity());
+        permissionManager.checkPermission(getContext(), getActivity());
 
         supportMapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.giver_map);
         DonationRequestCollection donReq = new DonationRequestCollection(DatabaseHandle.db);
@@ -108,9 +86,7 @@ public class GiverHomeFragment extends Fragment implements RequestReader
             public void onMapReady(@NonNull GoogleMap googleMap)
             {
                 gMap = googleMap;
-                if(requests == null)
-                    Toast.makeText(getContext(), "No data", Toast.LENGTH_SHORT).show();
-                else
+                if (requests != null)
                 {
                     for (int i = 0; i < requests.size(); i++)
                     {
@@ -149,53 +125,51 @@ public class GiverHomeFragment extends Fragment implements RequestReader
     private void loadMap()
     {
         for (int i = 0; i < requests.size(); i++)
-                    {
-                        LatLng one = new LatLng(Double.parseDouble(requests.get(i).getLatitude()),
-                                Double.parseDouble(requests.get(i).getLongitude()));
-                        MarkerOptions options = new MarkerOptions().position(one).title(String.valueOf(requests.get(i).getSummary()));
-                        gMap.addMarker(options);
+        {
+            LatLng one = new LatLng(Double.parseDouble(requests.get(i).getLatitude()),
+                    Double.parseDouble(requests.get(i).getLongitude()));
+            MarkerOptions options = new MarkerOptions().position(one).title(String.valueOf(requests.get(i).getSummary()));
+            gMap.addMarker(options);
 
-                        gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(one, 10));
+            gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(one, 10));
 
-                    }
+        }
 
         gMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener()
-                    {
-                        @Override
-                        public boolean onMarkerClick(@NonNull Marker marker)
-                        {
+        {
+            @Override
+            public boolean onMarkerClick(@NonNull Marker marker)
+            {
 
-                            String markerTitle = marker.getTitle();
-                            RequestInfo requestInfo = getRequestInfo(markerTitle);
-                            Intent markerIntent = new Intent(getActivity(), DonationRequestDetailsActivity.class);
-                            markerIntent.putExtra("title", markerTitle);
-                            markerIntent.putExtra("requestInfo", requestInfo);
-                            startActivity(markerIntent);
-                            Toast.makeText(getContext(), "Clicked marker", Toast.LENGTH_SHORT).show();
+                String markerTitle = marker.getTitle();
+                RequestInfo requestInfo = getRequestInfo(markerTitle);
+                Intent markerIntent = new Intent(getActivity(), DonationRequestDetailsActivity.class);
+                markerIntent.putExtra("title", markerTitle);
+                markerIntent.putExtra("requestInfo", requestInfo);
+                startActivity(markerIntent);
+                Toast.makeText(getContext(), "Clicked marker", Toast.LENGTH_SHORT).show();
 
-                            return false;
-                        }
-                    });
+                return false;
+            }
+        });
     }
 
     @Override
     public void processRequest(ArrayList<RequestInfo> requestInfos)
     {
         requests = requestInfos;
-        Toast.makeText(getContext(), Integer.toString(requests.size()), Toast.LENGTH_LONG).show();
         loadMap();
     }
 
     @Override
     public void updateList(RequestInfo requestInfo)
     {
-        Log.i("data", requestInfo.toString());
         requests.add(requestInfo);
     }
 
     public RequestInfo getRequestInfo(String summary)
     {
-        for(int i  = 0; i < requests.size(); i++)
+        for (int i = 0; i < requests.size(); i++)
         {
             if (requests.get(i).getSummary().equals(summary))
             {

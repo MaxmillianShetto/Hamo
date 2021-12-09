@@ -13,8 +13,8 @@ public class RequestInfo implements Serializable
     String requestDate;
     String imageUri;
 
-    public RequestInfo(String reqId,String _requestId,String lat, String lon,String _summary,
-                       String _details,String reqDate,String _imageUri)
+    public RequestInfo(String reqId, String _requestId, String lat, String lon, String _summary,
+                       String _details, String reqDate, String _imageUri)
     {
         representativeId = reqId;
         latitude = lat;
@@ -28,36 +28,47 @@ public class RequestInfo implements Serializable
 
     public String getLatitude()
     {
-        return  latitude;
+        return latitude;
     }
+
     public String getLongitude()
     {
         return longitude;
     }
+
     public String getRequestId()
     {
-        return  requestId;
+        return requestId;
     }
+
     public String getSummary()
     {
         return summary;
     }
+
     public String getDetails()
     {
-        return  details;
+        return details;
     }
+
     public String getRequestDate()
     {
-        return  requestDate;
+        return requestDate;
     }
+
     public String getImageUri()
     {
         return imageUri;
     }
-    public String getRepresentativeId(){ return representativeId; }
+
+    public String getRepresentativeId()
+    {
+        return representativeId;
+    }
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         return "RequestInfo{" +
                 "requestId='" + requestId + '\'' +
                 ", representativeId='" + representativeId + '\'' +

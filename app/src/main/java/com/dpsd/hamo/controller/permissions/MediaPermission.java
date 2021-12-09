@@ -22,7 +22,7 @@ public class MediaPermission implements PermissionManager
         }
         else
         {
-            ActivityCompat.requestPermissions(activity, new String[]{ Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE,
                     Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSIONS_REQUEST_CODE);
 
             return (PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(

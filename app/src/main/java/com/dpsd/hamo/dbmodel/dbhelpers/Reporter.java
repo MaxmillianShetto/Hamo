@@ -8,7 +8,8 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class Reporter {
+public class Reporter
+{
 
     Context _context;
     TextView textView;
@@ -17,6 +18,7 @@ public class Reporter {
     {
         _context = context;
     }
+
     TableRow getHeaderRow(String headerText)
     {
         TableRow hrow = new TableRow(_context);
@@ -27,11 +29,11 @@ public class Reporter {
         textView.setHeight(60);
         // set params here
         TableRow.LayoutParams hparams = new TableRow.LayoutParams();
-        hparams.setMargins(10,10,10,10);
+        hparams.setMargins(10, 10, 10, 10);
         hrow.setLayoutParams(hparams);
-        textView.setPadding(10,10,10,10);
+        textView.setPadding(10, 10, 10, 10);
         hrow.addView(textView);
-        return  hrow;
+        return hrow;
     }
 
     TableRow getTitleRow(String tableTitle)
@@ -45,12 +47,12 @@ public class Reporter {
         textView.setHeight(60);
         // set params here
         TableRow.LayoutParams hparams = new TableRow.LayoutParams();
-        hparams.setMargins(10,10,10,10);
-        textView.setPadding(10,10,10,10);
+        hparams.setMargins(10, 10, 10, 10);
+        textView.setPadding(10, 10, 10, 10);
         hrow.setLayoutParams(hparams);
 
         hrow.addView(textView);
-        return  hrow;
+        return hrow;
     }
 
     TableRow getRow(String text)
@@ -64,12 +66,12 @@ public class Reporter {
 
         // set params here
         TableRow.LayoutParams hparams = new TableRow.LayoutParams();
-        hparams.setMargins(10,10,10,10);
-        textView.setPadding(10,10,10,10);
+        hparams.setMargins(10, 10, 10, 10);
+        textView.setPadding(10, 10, 10, 10);
         hrow.setLayoutParams(hparams);
 
         hrow.addView(textView);
-        return  hrow;
+        return hrow;
     }
 
     TableRow getSeperatorRow()
@@ -83,16 +85,16 @@ public class Reporter {
 
         // set params here
         TableRow.LayoutParams hparams = new TableRow.LayoutParams();
-        hparams.setMargins(10,10,10,10);
+        hparams.setMargins(10, 10, 10, 10);
         hrow.setLayoutParams(hparams);
 
         hrow.addView(textView);
-        return  hrow;
+        return hrow;
     }
 
     public void addDonationsReceived(ArrayList<DonationGetter> dons, TableLayout tableLayout)
     {
-        for(DonationGetter donor: dons)
+        for (DonationGetter donor : dons)
         {
             tableLayout.addView(getSeperatorRow());
             tableLayout.addView(getHeaderRow(donor.name));
@@ -104,7 +106,7 @@ public class Reporter {
     public void addRows(ArrayList<Givings> givingInfos, TableLayout tableLayout, String tableTitle)
     {
 
-        for(Givings ginfo : givingInfos)
+        for (Givings ginfo : givingInfos)
         {
             tableLayout.addView(getSeperatorRow());
             tableLayout.addView(getHeaderRow(ginfo.requestSummary));

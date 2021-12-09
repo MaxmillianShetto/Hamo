@@ -22,8 +22,8 @@ public class LocationPermission implements PermissionManager
         }
         else
         {
-            ActivityCompat.requestPermissions(activity, new String[]{ Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.ACCESS_COARSE_LOCATION }, PERMISSIONS_REQUEST_CODE);
+            ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSIONS_REQUEST_CODE);
 
             return (PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(
                     appContext, Manifest.permission.ACCESS_FINE_LOCATION));

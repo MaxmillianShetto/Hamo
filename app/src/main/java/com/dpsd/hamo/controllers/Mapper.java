@@ -1,18 +1,9 @@
 package com.dpsd.hamo.controllers;
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-import android.widget.Toast;
-
-import androidx.annotation.NonNull;
-
 import com.dpsd.hamo.dbmodel.dbhelpers.RequestInfo;
-import com.dpsd.hamo.view.ui.home.DonationRequestDetailsActivity;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;

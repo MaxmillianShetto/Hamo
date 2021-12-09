@@ -1,11 +1,6 @@
 package com.dpsd.hamo.view.login;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,11 +8,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+
 import com.dpsd.hamo.R;
 import com.dpsd.hamo.controllers.EmailSender;
 import com.dpsd.hamo.controllers.Messenger;
 import com.dpsd.hamo.databinding.FragmentForgotPasswordBinding;
-import com.dpsd.hamo.databinding.FragmentSignUpBinding;
 
 import java.util.Random;
 import java.util.regex.Pattern;
@@ -29,11 +27,10 @@ import java.util.regex.Pattern;
  */
 public class ForgotPasswordFragment extends Fragment
 {
-    private FragmentForgotPasswordBinding binding;
-
     public TextView loginTransitionTextView;
     public EditText emailOrPhoneEditText;
     public Button sendCodeButton;
+    private FragmentForgotPasswordBinding binding;
 
     public ForgotPasswordFragment()
     {
@@ -118,12 +115,12 @@ public class ForgotPasswordFragment extends Fragment
         resetDetails.putString("resetCode", Integer.toString(resetCodeProvided));
 
 
-        if(pattern.matcher(value).matches())
+        if (pattern.matcher(value).matches())
         {
             EmailSender newEmail = new EmailSender();
             try
             {
-                newEmail.sendSignUpEmail("Reset Password", message.toString(),value);
+                newEmail.sendSignUpEmail("Reset Password", message.toString(), value);
                 resetDetails.putString("email", value);
 
             }
@@ -135,7 +132,7 @@ public class ForgotPasswordFragment extends Fragment
         else if (pattern.compile(regexPhoneNumber).matcher(value).matches())
         {
             Messenger messenger = new Messenger();
-            messenger.sendMessage(getContext(),getActivity(), value, message.toString());
+            messenger.sendMessage(getContext(), getActivity(), value, message.toString());
             resetDetails.putString("email", value);
         }
         loadResetPassword(resetDetails);

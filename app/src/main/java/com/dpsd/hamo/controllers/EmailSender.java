@@ -14,16 +14,18 @@ import javax.mail.util.ByteArrayDataSource;
 
 public class EmailSender extends javax.mail.Authenticator
 {
+    static
+    {
+        Security.addProvider(new com.dpsd.hamo.controllers.JSSEProvider());
+    }
+
     private String smtpHost = "smtp.gmail.com";
     private String defaultUser;
     private String defaultPassword;
     private Session session;
 
-    static {
-        Security.addProvider(new com.dpsd.hamo.controllers.JSSEProvider());
-    }
-
-    public EmailSender() {
+    public EmailSender()
+    {
         defaultUser = "jitoe.hamo@gmail.com";
         defaultPassword = "Cmu@jitoe12";
 
@@ -41,11 +43,13 @@ public class EmailSender extends javax.mail.Authenticator
         session = Session.getDefaultInstance(props, this);
     }
 
-    protected PasswordAuthentication getPasswordAuthentication() {
+    protected PasswordAuthentication getPasswordAuthentication()
+    {
         return new PasswordAuthentication(defaultUser, defaultPassword);
     }
 
-    public synchronized void sendSignUpEmail(String subject, String emailBody, String recipient) throws Exception {
+    public synchronized void sendSignUpEmail(String subject, String emailBody, String recipient) throws Exception
+    {
         try
         {
             MimeMessage message = new MimeMessage(session);
@@ -56,7 +60,8 @@ public class EmailSender extends javax.mail.Authenticator
             message.setRecipient(Message.RecipientType.TO, new InternetAddress(recipient));
             Transport.send(message);
         }
-        catch(Exception e){
+        catch (Exception e)
+        {
             e.printStackTrace();
         }
     }

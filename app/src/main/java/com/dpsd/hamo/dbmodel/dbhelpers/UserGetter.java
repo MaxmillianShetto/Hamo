@@ -2,7 +2,8 @@ package com.dpsd.hamo.dbmodel.dbhelpers;
 
 import java.util.List;
 
-public class UserGetter {
+public class UserGetter
+{
     public String email;
     public String role;
     public String state;
@@ -13,7 +14,8 @@ public class UserGetter {
     public List<GpsLocation> gpslocations;
 
     public UserGetter(String email, String role, String state, String establishment,
-                      String password, String phoneNumber, String fullname, List<GpsLocation> gpslocations) {
+                      String password, String phoneNumber, String fullname, List<GpsLocation> gpslocations)
+    {
         this.email = email;
         this.role = role;
         this.state = state;
@@ -25,7 +27,8 @@ public class UserGetter {
     }
 
 
-    public UserGetter(){
+    public UserGetter()
+    {
 
     }
 }

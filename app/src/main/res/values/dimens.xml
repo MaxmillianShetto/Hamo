@@ -5,7 +5,12 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="fragment_horizontal_margin">16dp</dimen>
     <dimen name="fragment_vertical_margin">16dp</dimen>
+    <dimen name="text_title">24sp</dimen>
+    <dimen name="text_details">20sp</dimen>
     <dimen name="margin_between_items">24dp</dimen>
     <dimen name="large_padding">36dp</dimen>
     <dimen name="small_padding">8dp</dimen>
+    <dimen name="four_dp">4dp</dimen>
+    <dimen name="edit_text_width">280dp</dimen>
+    <dimen name="edit_text_height">42dp</dimen>
 </resources>

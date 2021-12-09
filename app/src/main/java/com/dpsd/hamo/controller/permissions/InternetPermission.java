@@ -23,7 +23,7 @@ public class InternetPermission implements PermissionManager
         }
         else
         {
-            ActivityCompat.requestPermissions(activity, new String[]{ Manifest.permission.INTERNET}, PERMISSIONS_REQUEST_CODE);
+            ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.INTERNET}, PERMISSIONS_REQUEST_CODE);
 
             return (PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(
                     appContext, Manifest.permission.INTERNET));

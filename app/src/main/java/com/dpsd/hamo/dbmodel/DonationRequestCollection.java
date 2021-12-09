@@ -2,18 +2,14 @@ package com.dpsd.hamo.dbmodel;
 
 import android.content.Context;
 import android.util.Log;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
 
-import com.dpsd.hamo.controllers.DonationGetterI;
 import com.dpsd.hamo.controllers.ReportDisplayer;
 import com.dpsd.hamo.controllers.RequestAdder;
 import com.dpsd.hamo.controllers.RequestReader;
 import com.dpsd.hamo.dbmodel.dbhelpers.Donor;
 import com.dpsd.hamo.dbmodel.dbhelpers.GivingInfo;
-import com.dpsd.hamo.dbmodel.dbhelpers.GpsLocation;
 import com.dpsd.hamo.dbmodel.dbhelpers.ReportI;
 import com.dpsd.hamo.dbmodel.dbhelpers.RequestInfo;
 import com.dpsd.hamo.dbmodel.dbhelpers.RequestSummary;
@@ -31,20 +27,21 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class DonationRequestCollection {
+public class DonationRequestCollection
+{
     //Note : ID field is created automatically by db
-    public static final String name="donationRequest";
+    public static final String name = "donationRequest";
     //fields
-    public static final String summaryField="summary";
-    public static final String detailsField="details";
-    public static final String requestDateField="requestDate";
-    public static final String stateField="state";
-    public static final String representativeIdField="repId";
-    public static final String donorsField="donors";
-    public static final String imageUriField ="imageuri";
-    public static final String latitudeField="latitude";
+    public static final String summaryField = "summary";
+    public static final String detailsField = "details";
+    public static final String requestDateField = "requestDate";
+    public static final String stateField = "state";
+    public static final String representativeIdField = "repId";
+    public static final String donorsField = "donors";
+    public static final String imageUriField = "imageuri";
+    public static final String latitudeField = "latitude";
     public static final String longitudeField = "longitude";
-    public static final String donationRequestIdField="donationRequestId";
+    public static final String donationRequestIdField = "donationRequestId";
     public static final String donorIdField = "donorId";
 
 
@@ -56,33 +53,35 @@ public class DonationRequestCollection {
         db = database;
     }
 
-    public void addDonationRequest(String summary, String details, String repId,String lat,String lon,
+    public void addDonationRequest(String summary, String details, String repId, String lat, String lon,
                                    RequestAdder requestAdder)
     {
-        if(summary.trim().equals("")||details.trim().equals("")|| repId.trim().equals(""))
+        if (summary.trim().equals("") || details.trim().equals("") || repId.trim().equals(""))
         {
             return;
         }
         try
         {
             Map<String, Object> record = new HashMap<>();
-            record.put(summaryField,summary);
-            record.put(detailsField,details);
-            record.put(requestDateField,"");
-            record.put(stateField,"active");
-            record.put(representativeIdField,repId);
-            record.put(donorsField,new ArrayList<Donor>());
-            record.put(imageUriField,"");
-            record.put(latitudeField,lat);
-            record.put(longitudeField,lon);
+            record.put(summaryField, summary);
+            record.put(detailsField, details);
+            record.put(requestDateField, "");
+            record.put(stateField, "active");
+            record.put(representativeIdField, repId);
+            record.put(donorsField, new ArrayList<Donor>());
+            record.put(imageUriField, "");
+            record.put(latitudeField, lat);
+            record.put(longitudeField, lon);
 
-            db.collection(name).add(record).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+            db.collection(name).add(record).addOnCompleteListener(new OnCompleteListener<DocumentReference>()
+            {
                 @Override
-                public void onComplete(@NonNull Task<DocumentReference> task) {
-                    if(task.isSuccessful())
+                public void onComplete(@NonNull Task<DocumentReference> task)
+                {
+                    if (task.isSuccessful())
                     {
-                       DocumentReference doc = task.getResult();
-                       requestAdder.saveImage(doc.getId());
+                        DocumentReference doc = task.getResult();
+                        requestAdder.saveImage(doc.getId());
                     }
                     else
                     {
@@ -93,21 +92,21 @@ public class DonationRequestCollection {
         }
         catch (Exception ex)
         {
-            Log.d(TAG, "addDonationRequest: "+ex.getMessage());
+            Log.d(TAG, "addDonationRequest: " + ex.getMessage());
         }
     }
 
-    public void updateImageUri(String requestId,String dburi)
+    public void updateImageUri(String requestId, String dburi)
     {
         try
         {
-            db.collection(name).document(requestId).update(imageUriField,dburi).addOnCompleteListener(
+            db.collection(name).document(requestId).update(imageUriField, dburi).addOnCompleteListener(
                     new OnCompleteListener<Void>()
                     {
                         @Override
                         public void onComplete(@NonNull Task<Void> task)
                         {
-                            if(task.isSuccessful())
+                            if (task.isSuccessful())
                                 Log.d(TAG, "onComplete: db uri updated");
                         }
                     }
@@ -115,7 +114,7 @@ public class DonationRequestCollection {
         }
         catch (Exception ex)
         {
-            Log.d(TAG, "updateImageUri: "+ex.getMessage());
+            Log.d(TAG, "updateImageUri: " + ex.getMessage());
         }
     }
 
@@ -125,16 +124,18 @@ public class DonationRequestCollection {
         try
         {
             CollectionReference donRequestRef = db.collection(name);
-            donRequestRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            donRequestRef.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
+            {
                 @Override
-                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                    if(task.isSuccessful())
+                public void onComplete(@NonNull Task<QuerySnapshot> task)
+                {
+                    if (task.isSuccessful())
                     {
-                         ArrayList<RequestInfo> requestInfos = new ArrayList<>();
-                        String repId = "",lat="", lon="";
-                        for(QueryDocumentSnapshot document: task.getResult())
+                        ArrayList<RequestInfo> requestInfos = new ArrayList<>();
+                        String repId = "", lat = "", lon = "";
+                        for (QueryDocumentSnapshot document : task.getResult())
                         {
-                            if(document.get(stateField).toString().trim().equals("active"))
+                            if (document.get(stateField).toString().trim().equals("active"))
                             {
                                 //add request
                                 requestInfos.add(new RequestInfo(document.get(representativeIdField).toString(),
@@ -145,7 +146,7 @@ public class DonationRequestCollection {
                                         document.get(detailsField).toString(),
                                         document.get(requestDateField).toString(),
                                         document.get(imageUriField).toString()
-                                        ));
+                                ));
 
                             }
 
@@ -165,7 +166,7 @@ public class DonationRequestCollection {
         }
         catch (Exception ex)
         {
-            Log.d(TAG, "getRequests: "+ex.getMessage());
+            Log.d(TAG, "getRequests: " + ex.getMessage());
         }
     }
 
@@ -173,14 +174,16 @@ public class DonationRequestCollection {
     {
         try
         {
-            db.collection(name).whereEqualTo(representativeIdField,repId).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            db.collection(name).whereEqualTo(representativeIdField, repId).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
+            {
                 @Override
-                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                    if(task.isSuccessful())
+                public void onComplete(@NonNull Task<QuerySnapshot> task)
+                {
+                    if (task.isSuccessful())
                     {
                         ArrayList<RequestSummary> summaries = new ArrayList<>();
                         ArrayList<String> justSummaries = new ArrayList<>();
-                        for (QueryDocumentSnapshot document: task.getResult())
+                        for (QueryDocumentSnapshot document : task.getResult())
                         {
                             summaries.add(new RequestSummary(document.getId(),
                                     document.get(summaryField).toString()));
@@ -194,7 +197,7 @@ public class DonationRequestCollection {
         }
         catch (Exception ex)
         {
-            Log.d(TAG, "getRequestIdsAndSummaries: "+ex.getMessage());
+            Log.d(TAG, "getRequestIdsAndSummaries: " + ex.getMessage());
         }
     }
 
@@ -203,19 +206,21 @@ public class DonationRequestCollection {
         //get representative name, summary, and donation date
         try
         {
-            db.collection(name).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            db.collection(name).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>()
+            {
                 @Override
-                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                    if(task.isSuccessful())
+                public void onComplete(@NonNull Task<QuerySnapshot> task)
+                {
+                    if (task.isSuccessful())
                     {
                         ArrayList<Donor> donors;
                         ArrayList<GivingInfo> givingInfos = new ArrayList<>();
-                        for(QueryDocumentSnapshot document: task.getResult())
+                        for (QueryDocumentSnapshot document : task.getResult())
                         {
                             donors = (ArrayList<Donor>) document.get(donorsField);
                             for (Donor d : donors)
                             {
-                                if(d.getDonorId().equals(giverId))
+                                if (d.getDonorId().equals(giverId))
                                 {
                                     //get rep name using his id
                                     String repName = "";
@@ -227,10 +232,10 @@ public class DonationRequestCollection {
                                     }
                                     catch (Exception ex)
                                     {
-                                        Log.d(TAG, "onComplete: "+ex.getMessage());
+                                        Log.d(TAG, "onComplete: " + ex.getMessage());
                                     }
 
-                                    givingInfos.add( new GivingInfo(
+                                    givingInfos.add(new GivingInfo(
                                             repName,
                                             document.get(summaryField).toString(),
                                             document.get(detailsField).toString()));
@@ -252,7 +257,7 @@ public class DonationRequestCollection {
         }
         catch (Exception ex)
         {
-            Log.d(TAG, "getContributions: "+ex.getMessage());
+            Log.d(TAG, "getContributions: " + ex.getMessage());
         }
     }
 

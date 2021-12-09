@@ -1,13 +1,13 @@
 package com.dpsd.hamo.view;
 
+import android.content.Intent;
+import android.os.Bundle;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
-
-import android.content.Intent;
-import android.os.Bundle;
 
 import com.dpsd.hamo.R;
 import com.dpsd.hamo.databinding.ActivityAdminBinding;

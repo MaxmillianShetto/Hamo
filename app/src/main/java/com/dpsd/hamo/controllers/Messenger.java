@@ -29,8 +29,8 @@ public class Messenger
         if (permissionsManager.checkPermission(appContext, activity))
         {
             appContext.registerReceiver(messageSentReceiver, new IntentFilter("SMS_SENT_ACTION"));
-            PendingIntent messageSent = PendingIntent.getBroadcast(appContext,0, new Intent("SMS_SENT_ACTION"), 0);
-            smsManager.sendTextMessage(phoneNumber,null, message, messageSent, null);
+            PendingIntent messageSent = PendingIntent.getBroadcast(appContext, 0, new Intent("SMS_SENT_ACTION"), 0);
+            smsManager.sendTextMessage(phoneNumber, null, message, messageSent, null);
         }
     }
 }

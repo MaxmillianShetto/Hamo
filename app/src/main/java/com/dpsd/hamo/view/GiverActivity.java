@@ -10,7 +10,6 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.dpsd.hamo.R;
-import com.dpsd.hamo.databinding.ActivityCommunityRepBinding;
 import com.dpsd.hamo.databinding.ActivityGiverBinding;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 

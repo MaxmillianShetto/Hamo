@@ -1,8 +1,5 @@
 package com.dpsd.hamo.view.ui.home;
 
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -22,13 +19,15 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.dpsd.hamo.R;
 import com.dpsd.hamo.controller.permissions.PermissionFactory;
 import com.dpsd.hamo.controller.permissions.PermissionManager;
 import com.dpsd.hamo.controller.permissions.PermissionType;
 import com.dpsd.hamo.controllers.Donator;
 import com.dpsd.hamo.dbmodel.DatabaseHandle;
-import com.dpsd.hamo.dbmodel.DonationRequestCollection;
 import com.dpsd.hamo.dbmodel.DonorsCollection;
 import com.dpsd.hamo.dbmodel.dbhelpers.FileStorage;
 import com.dpsd.hamo.dbmodel.dbhelpers.LocalStorage;
@@ -47,14 +46,12 @@ public class DonateActivity extends AppCompatActivity implements Donator
 
     Button btnDonate;
     EditText description;
-    private Uri imageUri;
-
     int REQUEST_CODE_UPLOAD = 1;
     int REQUEST_CODE_CAMERA = 100;
-
     Spinner spinner;
-    String requestId="";
+    String requestId = "";
     String repId = "";
+    private Uri imageUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -79,7 +76,7 @@ public class DonateActivity extends AppCompatActivity implements Donator
         takePhotoTextView.setOnClickListener(v -> {
             PermissionManager cameraPermission = PermissionFactory.getPermission(PermissionType.CAMERA);
             assert cameraPermission != null;
-            if(cameraPermission.checkPermission(getApplicationContext(), DonateActivity.this))
+            if (cameraPermission.checkPermission(getApplicationContext(), DonateActivity.this))
             {
                 captureImage();
             }
@@ -96,12 +93,12 @@ public class DonateActivity extends AppCompatActivity implements Donator
                 LocalDateTime now = LocalDateTime.now();
                 String lat = LocalStorage.getValue("latitude", getApplicationContext());
                 String lng = LocalStorage.getValue("longitude", getApplicationContext());
-                String donorId= LocalStorage.getValue("userId",getApplicationContext());
-                String  donorName = LocalStorage.getValue("name",getApplicationContext());
+                String donorId = LocalStorage.getValue("userId", getApplicationContext());
+                String donorName = LocalStorage.getValue("name", getApplicationContext());
                 DonorsCollection dcol = new DonorsCollection(DatabaseHandle.db);
-                dcol.addDonation(requestId,donorId, donorName,now.toString(),
-                    description.getText().toString(),lat, lng,repId,
-                    DonateActivity.this);
+                dcol.addDonation(requestId, donorId, donorName, now.toString(),
+                        description.getText().toString(), lat, lng, repId,
+                        DonateActivity.this);
 
             }
         });
@@ -125,14 +122,14 @@ public class DonateActivity extends AppCompatActivity implements Donator
                     setLocal(DonateActivity.this, "fr");
 
                 }
-                else if(langSelected.equals("English"))
+                else if (langSelected.equals("English"))
                 {
                     setLocal(DonateActivity.this, "en");
                 }
                 else
-                    {
-                        //Toast.makeText(DonateActivity.this, "Please select a language", Toast.LENGTH_SHORT).show();
-                    }
+                {
+                    //Toast.makeText(DonateActivity.this, "Please select a language", Toast.LENGTH_SHORT).show();
+                }
             }
 
             @Override
@@ -180,7 +177,7 @@ public class DonateActivity extends AppCompatActivity implements Donator
 
     public void setLocal(AppCompatActivity context, String langCode)
     {
-        Toast.makeText(getApplicationContext(),langCode,Toast.LENGTH_SHORT);
+        Toast.makeText(getApplicationContext(), langCode, Toast.LENGTH_SHORT);
         Locale locale = new Locale(langCode);
         locale.setDefault(locale);
 
@@ -198,7 +195,7 @@ public class DonateActivity extends AppCompatActivity implements Donator
         Intent intent = new Intent(this, GiverActivity.class);
         Toast.makeText(getApplicationContext(), "Thank you for donating", Toast.LENGTH_LONG).show();
         //save image
-        saveImage(imageUri,donationId);
+        saveImage(imageUri, donationId);
         //move to home activity
         startActivity(intent);
     }
@@ -209,16 +206,16 @@ public class DonateActivity extends AppCompatActivity implements Donator
         Toast.makeText(getApplicationContext(), "Failed", Toast.LENGTH_LONG).show();
     }
 
-    private void saveImage(Uri imageUri,String donationId)
+    private void saveImage(Uri imageUri, String donationId)
     {
         try
         {
-            FileStorage.addDonorImage(LocalStorage.getValue("userId", this),requestId
-                    ,donationId,imageUri, this);
+            FileStorage.addDonorImage(LocalStorage.getValue("userId", this), requestId
+                    , donationId, imageUri, this);
         }
         catch (Exception ex)
         {
-            Log.d("Donation Activity", "saveImage: "+ex.getMessage());
+            Log.d("Donation Activity", "saveImage: " + ex.getMessage());
         }
     }
 }
